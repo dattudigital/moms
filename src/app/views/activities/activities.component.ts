@@ -1,9 +1,11 @@
-import { Component, ChangeDetectorRef, OnInit, } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, ɵConsole, } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { FaqsService } from '../../services/faqs.service';
+import { UserActivitiesService } from '../../services/user-activities.service';
 declare var $: any;
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastyService, ToastOptions } from 'ng2-toasty';
+import { Http } from '@angular/http';
+import { environment } from '../../../environments/environment'
 
 @Component({
   templateUrl: 'activities.component.html',
@@ -31,20 +33,22 @@ export class ActivitiesComponent implements OnInit {
     timeout: 3000,
     theme: 'default'
   };
-  faqData: any;
+
+  userActivity: any;
   copiedRow: any;
-  faqsForm: FormGroup;
-  faqs: any = {
-    'faq_id': null,
-    'faq_question': '',
-    'faq_answer': '',
-    'faq_status': ''
+  activityForm: FormGroup;
+  activities: any = {
+    'activity_id': null,
+    'activity_name': '',
+    'activity_type': '',
+    'activity_desc': '',
+    'activity_status': ''
   }
   submitted = false;
   cols: any = [];
   deleteRecord = '';
 
-  constructor(private spinner: NgxSpinnerService, private toastyService: ToastyService, private cdr: ChangeDetectorRef, private formBuilder: FormBuilder, private service: FaqsService) { }
+  constructor(private http: Http, private activityService: UserActivitiesService, private spinner: NgxSpinnerService, private toastyService: ToastyService, private cdr: ChangeDetectorRef, private formBuilder: FormBuilder) { }
 
   ngAfterViewChecked() {
     //your code to update the model
@@ -52,65 +56,69 @@ export class ActivitiesComponent implements OnInit {
   }
 
   ngOnInit() {
-   
-    this.service.getList().subscribe(response => {
 
+    this.activityService.getActivity().subscribe(response => {
       if (response.json().status == true) {
-        this.faqData = response.json().data;
+        this.userActivity = response.json().result;
+        console.log(this.userActivity)
       } else {
-        this.faqData = [];
+        this.userActivity = [];
       }
     });
 
     this.cols = [
-      { field: 'faq_question', header: 'Question' },
-      { field: 'faq_answer', header: 'Answer' },
+      { field: 'activity_name', header: 'Name' },
+      { field: 'activity_type', header: 'Type' },
+      { field: 'activity_desc', header: 'Description' },
     ]
+    this.activityForm = this.formBuilder.group({
+      Name: ['', Validators.required],
+      Type: ['', Validators.required],
+      Description: ['', Validators.required]
 
-    this.faqsForm = this.formBuilder.group({
-      Question: ['', Validators.required],
-      Answer: ['', Validators.required]
     });
   }
 
+
   removeFields() {
     this.submitted = false;
-    this.faqs.faq_id = '';
-    this.faqs.faq_question = '';
-    this.faqs.faq_answer = '';
-    this.faqs.faq_status = '';
+    this.activities.activity_id = '';
+    this.activities.activity_name = '';
+    this.activities.activity_type = '';
+    this.activities.activity_desc = '';
   }
+  get f() { return this.activityForm.controls; }
 
-  get f() { return this.faqsForm.controls; }
 
-  addFaqs() {
+  addUserActivity() {
     this.submitted = true;
-    if (this.faqsForm.invalid) {
+    if (this.activityForm.invalid) {
       return;
     }
-    if (!this.faqs.faq_id) {
-      this.faqs.faq_status = '1'
+    if (!this.activities.activity_id) {
+      this.activities.activity_status = '1'
     }
-    if (!this.faqs.faq_id) {
-      this.faqs.faq_id = null;
+    if (!this.activities.activity_id) {
+      this.activities.activity_id = null;
     }
     var data = {
-      faq_id: this.faqs.faq_id,
-      faq_question: this.faqs.faq_question,
-      faq_answer: this.faqs.faq_answer,
-      faq_status: this.faqs.faq_status
+      activity_id: this.activities.activity_id,
+      activity_name: this.activities.activity_name,
+      activity_type: this.activities.activity_type,
+      activity_desc: this.activities.activity_desc,
+      activity_status: this.activities.activity_status
     }
     let modelClose = document.getElementById("CloseButton");
-    this.service.addOrUpdateFaq(data).subscribe(res => {
+    this.activityService.saveActivitiesDetails(data).subscribe(res => {
       modelClose.click();
       if (res.json().status == true) {
-        if (!this.faqs.faq_id) {
-          this.faqData.push(res.json().data)
+        if (!this.activities.activity_id) {
+          this.userActivity.push(res.json().result)
         } else {
-          if (this.faqs.faq_status == '0') {
-            this.faqData.splice(this.faqs["index"], 1);
+          if (this.activities.activity_status == '0') {
+            this.userActivity.splice(this.activities["index"], 1);
           } else {
-            this.faqData[this.faqs["index"]] = res.json().data;
+            this.userActivity[this.activities["index"]] = res.json().result;
           }
         }
         this.toastyService.success(this.toastOptionsSuccess);
@@ -120,29 +128,33 @@ export class ActivitiesComponent implements OnInit {
     });
   }
 
-  editFaqs(data, index) {
+  editUserActivity(data, index) {
     this.copiedRow = Object.assign({}, data);
-    this.faqs = data;
-    this.faqs["index"] = index;
+    this.activities = data;
+    this.activities["index"] = index;
   }
+
   backupData() {
-    let _index = this.faqs["index"];
-    this.faqData[_index] = this.copiedRow;
+    let _index = this.activities["index"];
+    this.userActivity[_index] = this.copiedRow;
   }
-  deleteFaqs(val, index) {
+
+  deleteUserActivity(val, index) {
+    console.log(val)
     this.deleteRecord = val;
     this.deleteRecord["index"] = index
   }
 
   deleteAlert() {
-    this.service.addOrUpdateFaq({ faq_id: this.deleteRecord["faq_id"], faq_status: 0 }).subscribe(res => {
+    this.activityService.saveActivitiesDetails({ activity_id: this.deleteRecord["activity_id"], activity_status: 0 }).subscribe(res => {
       if (res.json().status == true) {
-        this.faqData.splice(this.deleteRecord["index"], 1);
+        this.userActivity.splice(this.deleteRecord["index"], 1);
         this.toastyService.success(this.toastOptionsSuccess);
       } else {
         this.toastyService.error(this.toastOptionsError);
       }
     });
   }
+
 
 }

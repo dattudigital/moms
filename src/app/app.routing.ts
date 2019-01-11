@@ -23,15 +23,12 @@ export const routes: Routes = [
     data: {
       title: 'Home'
     },
-    children: [      
+    children: [
       {
         path: 'dashboard',
         loadChildren: './views/dashboard/dashboard.module#DashboardModule'
       },
-      {
-        path: 'faqs',
-        loadChildren: './views/faqs/faqs.module#FaqsModule'
-      },
+
       {
         path: 'beauty-tips',
         loadChildren: './views/beautytip/beautytip.module#BeautytipModule'
@@ -39,6 +36,14 @@ export const routes: Routes = [
       {
         path: 'activities',
         loadChildren: './views/activities/activities.module#ActivitiesModule'
+      },
+      {
+        path: 'deals',
+        loadChildren: './views/deals/deals.module#DealsModule'
+      },
+      {
+        path: 'content',
+        loadChildren: './views/content/content.module#ContentModule'
       }
     ]
   }

@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { FaqsComponent } from './faqs.component';
+import { ContentComponent } from './content.component';
 import { AuthGuard } from '../../common-session/session.check'
 
 const routes: Routes = [
   {
-    path: '', component: FaqsComponent,
+    path: '', component: ContentComponent,
     data: {
-      title: 'Faqs'
+      title: 'Content'
     },
     canActivate: [AuthGuard]
   }
@@ -16,4 +16,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class FaqsRoutingModule {}
+export class ContentRoutingModule {}

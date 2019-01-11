@@ -129,16 +129,6 @@
                     <input type="file" name="photo" accept="image/*" (change)="getFileDetails($event,'p')" />
                   </div>
                 </div>
-                <div class="form-group row">
-                  <label class="col-md-3 col-form-label" for="text-input">Video Url</label>
-                  <div class="col-md-9">
-                    <input type="text" maxlength="50" class="form-control" formControlName="videoUrl" placeholder="Enter Video Url"
-                      [(ngModel)]="beautytips.tip_video" [ngClass]="{ 'is-invalid': submitted && f.videoUrl.errors }" />
-                    <div *ngIf="submitted && f.videoUrl.errors" class="invalid-feedback">
-                      <div *ngIf="f.videoUrl.errors.required" style="color:red">VideoUrl is required</div>
-                    </div>
-                  </div>
-                </div>
                 <div *ngIf="beautytips.tip_id">
                   <div class="form-group row">
                     <label class="col-md-3 col-form-label" for="text-input">Status</label>

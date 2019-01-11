@@ -1,0 +1,248 @@
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+    <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+
+<ng2-toasty [position]="'top-right'"></ng2-toasty>
+
+<div class="card-body">
+    <div class="row">
+        <div class="col-6 col-sm-4 col-md text-center">
+            <button (click)="removeFields();addOrUpdateDeals.show()" class="btn btn-primary" style="float: right;"><i
+                    class="fa fa-lightbulb-o"></i>&nbsp;Create
+                Deals</button>
+        </div>
+    </div>
+</div>
+
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-align-justify"></i> Deals List
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Short Description</th>
+                                <th>Image</th>
+                                <!-- <th>Active From</th>
+                                <th>Active To</th> -->
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let list of dealsData | paginate: { itemsPerPage: 3, currentPage: currentPage };let i=index;">
+                                <td>{{list.deal_name}}</td>
+                                <td>{{list.deal_type}}</td>
+                                <td>{{list.deal_long_desc}}</td>
+                                <td>{{list.deal_short_desc}}</td>
+                                <td> <img [src]="list.deal_image" height="50"></td>
+                                <!-- <td>{{list.deal_active_from | date:'medium'}}</td>
+                                <td>{{list.deal_active_to | date:'medium'}}</td> -->
+                                <td> <button class="btn-primary" data-toggle="modal" (click)="addOrUpdateDeals.show();editDeal(list,i)"><i
+                                            class="fa fa-edit"></i></button></td>
+                                <td> <button class="btn-danger" data-toggle="modal" (click)="dangerModal.show();deleteDeal(list,i)"><i
+                                            class="fa fa-trash"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div bsModal #addOrUpdateDeals="bs-modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card" style="margin-bottom: 0;">
+                        <div class="card-header">
+                            <strong *ngIf="!deals.deal_id">Add Deals</strong>
+                            <strong *ngIf="deals.deal_id">Edit Deals</strong>
+                            <button type="button" class="close" (click)="addOrUpdateDeals.hide();backupData()">&times;</button>
+                        </div>
+                        <div class="card-body">
+                            <form name="form" [formGroup]="dealsForm">
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label" for="select1">Name<b style="color:red">*</b></label>
+                                    <div class="col-md-9">
+                                        <input type="text" maxlength="50" formControlName="Name" class="form-control"
+                                            placeholder="Name" [(ngModel)]="deals.deal_name" [ngClass]="{ 'is-invalid': submitted && f.Name.errors }" />
+                                        <div *ngIf="submitted && f.Name.errors" class="invalid-feedback">
+                                            <div *ngIf="f.Name.errors.required" style="color:red">Deal Name is required</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label" for="text-input">Short Description <b style="color:red">*</b></label>
+                                    <div class="col-md-9">
+                                        <input type="text" maxlength="50" formControlName="shortDescription" class="form-control"
+                                            placeholder=" Description" [(ngModel)]="deals.deal_short_desc" [ngClass]="{ 'is-invalid': submitted && f.shortDescription.errors }" />
+                                        <div *ngIf="submitted && f.shortDescription.errors" class="invalid-feedback">
+                                            <div *ngIf="f.shortDescription.errors.required" style="color:red">Short
+                                                Description is required</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label" for="text-input">Description</label>
+                                    <div class="col-md-9">
+                                        <textarea type="text" maxlength="500" rows="5" class="form-control" placeholder="Enter LongDescription"
+                                            [(ngModel)]="deals.deal_long_desc" [(ngModel)]="showMoreControls"
+                                            [ngModelOptions]="{standalone: true}"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label" for="select1">Type<b style="color:red">*</b></label>
+                                    <div class="col-md-9">
+                                        <select id="select1" name="select1" class="form-control" formControlName="Type"
+                                            [(ngModel)]="deals.deal_type" [ngClass]="{ 'is-invalid': submitted && f.Type.errors }">
+                                            <option *ngFor="let data1 of this.dealAdd" [ngValue]="data1.content_cat_id">{{data1.content_cat_name}}</option>
+                                        </select>
+                                        <div *ngIf="submitted && f.Type.errors" class="invalid-feedback">
+                                            <div *ngIf="f.Type.errors.required" style="color:red">Please select Type</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" *ngIf="!deals.deal_id">
+                                    <label class="col-md-3 col-form-label" for="text-input">Image</label>
+                                    <div class="col-md-9">
+                                        <img *ngIf="userimagePreview" [src]="userimagePreview.result" height="50">
+                                    </div>
+                                </div>
+                                <div *ngIf="deals.deal_id">
+                                    test{{isShowOriginalImg}}
+                                    <div class="form-group row" *ngIf="!isShowOriginalImg">
+                                        <label class="col-md-3 col-form-label" for="text-input">Image first</label>
+                                        <div class="col-md-9">
+                                            <img [src]="deals.deal_image" height="50">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" *ngIf="isShowOriginalImg">
+                                        <label class="col-md-3 col-form-label" for="text-input">Image latest</label>
+                                        <div class="col-md-9">
+                                            <img *ngIf="userimagePreview" [src]="userimagePreview.result" height="50">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label" for="text-input"></label>
+                                    <div class="col-md-9">
+                                        <input type="file" name="photo" accept="image/*" (change)="getFileDetails($event,'p')" />
+                                    </div>
+                                </div>
+                                <!-- 
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label" for="text-input">Active From<b style="color:red">*</b></label>
+                                    <div class="col-md-9">
+                                        <input type="datetime-local" maxlength="10" formControlName="StartDate" class="form-control"
+                                            placeholder="Activity StartDate" [(ngModel)]="deals.deal_active_from | date:'yyyy-MM-ddTHH:mm'"
+                                            [ngClass]="{ 'is-invalid': submitted && f.StartDate.errors }">
+                                        <div *ngIf="submitted && f.StartDate.errors" class="invalid-feedback">
+                                            <div *ngIf="f.StartDate.errors.required" style="color:red">Active From is
+                                                required</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label" for="text-input">Active To<b style="color:red">*</b></label>
+                                    <div class="col-md-9">
+                                        <input type="datetime-local" maxlength="10" formControlName="EndDate" class="form-control"
+                                            placeholder="Activity EndDate" [(ngModel)]="deals.deal_active_to | date:'yyyy-MM-ddTHH:mm'" [ngClass]="{ 'is-invalid': submitted && f.EndDate.errors }">
+                                        <div *ngIf="submitted && f.EndDate.errors" class="invalid-feedback">
+                                            <div *ngIf="f.EndDate.errors.required" style="color:red">Active To is
+                                                required</div>
+                                        </div>
+                                    </div>
+                                </div> -->
+
+                                <div *ngIf="deals.deal_id">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 col-form-label" for="text-input">Status</label>
+                                        <div class="col-md-8">
+                                            <select class="form-control" name="vehicletype1" [(ngModel)]="deals.deal_status"
+                                                [(ngModel)]="showMoreControls" [ngModelOptions]="{standalone: true}">
+                                                <option value="1">Active</option>
+                                                <option value="0">In active</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span *ngIf="!deals.deal_id">
+                                    <button style="margin-left: 26%;" class="btn btn-primary" (click)="addOrUpdateDeal()">ADD</button>
+                                </span>
+                                <span *ngIf="deals.deal_id">
+                                    <button style="margin-left: 26%;" class="btn btn-primary" (click)="addOrUpdateDeal()">Update</button>
+                                </span>
+                                &nbsp;&nbsp;
+                                <button type="button" id="CloseButton" class="btn btn-secondary" (click)="addOrUpdateDeals.hide();backupData()">Close</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div bsModal #dangerModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-danger" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete eals</h4>
+                <button type="button" class="close" (click)="dangerModal.hide()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure to Delete ?</p>
+            </div>
+            <div class="container">
+                <table class="table table-bordered table-striped table-sm" style="padding:10px;">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Short Description</th>
+                            <th>Description</th>
+                            <th>Image</th>
+                            <!-- <th>Active From</th>
+                            <th>Active To</th> -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngIf="deleteRecord">
+                            <td>{{deleteRecord.deal_name}}</td>
+                            <td>{{deleteRecord.deal_type}}</td>
+                            <td>{{deleteRecord.deal_long_desc}}</td>
+                            <td>{{deleteRecord.deal_long_desc}}</td>
+                            <td><img [src]="deleteRecord.deal_image" height="50"> </td>
+                            <!-- <td>{{deleteRecord.deal_active_from | date:'medium'}}</td>
+                            <td>{{deleteRecord.deal_active_to | date:'medium'}}</td> -->
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="dangerModal.hide()">Close</button>
+                <button type="button" class="btn btn-danger" (click)="dangerModal.hide();deleteAlert();">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>

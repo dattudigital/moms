@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit {
     }
     this.spinner.show();
     console.log(data);
-    this.service.loginSubmit(data).subscribe(response => {
+    this.service.saveLoginDetails(data).subscribe(response => {
       this.spinner.hide();
       if (response.json().status == true) {
         localStorage.setItem('loginDetails', JSON.stringify(response.json().result));

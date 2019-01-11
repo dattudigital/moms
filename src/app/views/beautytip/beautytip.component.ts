@@ -118,6 +118,7 @@ export class BeautyTipsComponent implements OnInit {
           this.tipsData.push(res.json().data)
         } else {
           let _index = ((this.currentPage - 1) * 3) + this.beautytips["index"]
+          console.log(_index)
           if (this.beautytips.rec_status == '0') {
             this.tipsData.splice(_index, 1);
           } else {
