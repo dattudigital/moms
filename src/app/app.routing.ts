@@ -28,8 +28,6 @@ export const routes: Routes = [
         path: 'dashboard',
         loadChildren: './views/dashboard/dashboard.module#DashboardModule'
       },
-
-
       {
         path: 'faqs',
         loadChildren: './views/faqs/faqs.module#FaqsModule'
@@ -37,8 +35,11 @@ export const routes: Routes = [
       {
         path: 'beauty-tips',
         loadChildren: './views/beautytip/beautytip.module#BeautytipModule'
+      },
+      {
+        path: 'activities',
+        loadChildren: './views/activities/activities.module#ActivitiesModule'
       }
-
     ]
   }
 ];

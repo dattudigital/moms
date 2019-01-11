@@ -4,9 +4,6 @@ export const navItems = [
     url: '/dashboard',
     icon: 'icon-home'
   },
-
- 
-
   {
     name: 'Faqs',
     url: '/faqs',
@@ -17,5 +14,9 @@ export const navItems = [
     url: '/beauty-tips',
     icon: 'icon-user-female'
   },
- 
+  {
+    name: 'Activities',
+    url: '/activities',
+    icon: 'icon-user-female'
+  }
 ];
