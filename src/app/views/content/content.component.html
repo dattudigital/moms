@@ -7,7 +7,7 @@
 <div class="card-body">
   <div class="row">
     <div class="col-6 col-sm-4 col-md text-center">
-      <button (click)="addOrUpdateBeautyTip.show();removeFields()" class="btn btn-primary" style="float: right;"><i
+      <button (click)="addOrUpdateContent.show();removeFields()" class="btn btn-primary" style="float: right;"><i
           class="fa fa-lightbulb-o"></i>&nbsp;Create
         Content</button>
     </div>
@@ -19,7 +19,7 @@
     <div class="col-lg-12">
       <div class="card">
         <div class="card-header">
-          <i class="fa fa-align-justify"></i> Deals List
+          <i class="fa fa-align-justify"></i> Content List
         </div>
         <div class="card-body">
           <table class="table table-bordered table-striped table-sm">
@@ -35,15 +35,15 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let list of ContentData | paginate: { itemsPerPage: 3, currentPage: currentPage };let i=index;">
-                <td>{{list.content_name}}</td>
-                <td>{{list.content_full_desc}}</td>
-                <td>{{list.content_short_desc}}</td>
-                <td> <img [src]="list.content_image" height="50"></td>
-                <td>{{list.content_price}}</td>
-                <td> <button class="btn-primary" data-toggle="modal" (click)="addOrUpdateBeautyTip.show();editBeautyTip(data,i)"><i
+              <tr *ngFor="let content of ContentData | paginate: { itemsPerPage: 3, currentPage: currentPage };let i=index;">
+                <td>{{content.content_name}}</td>
+                <td>{{content.content_full_desc}}</td>
+                <td>{{content.content_short_desc}}</td>
+                <td> <img [src]="content.content_image" height="50"></td>
+                <td>{{content.content_price}}</td>
+                <td> <button class="btn-primary" data-toggle="modal" (click)="addOrUpdateContent.show();editContent(content,i)"><i
                       class="fa fa-edit"></i></button></td>
-                <td> <button class="btn-danger" data-toggle="modal" (click)="dangerModal.show();deleteBeautyTips(data,i)"><i
+                <td> <button class="btn-danger" data-toggle="modal" (click)="dangerModal.show();deleteContent(content,i)"><i
                       class="fa fa-trash"></i></button></td>
               </tr>
             </tbody>
@@ -53,4 +53,147 @@
       </div>
     </div>
   </div>
+</div>
+
+
+
+<div bsModal #addOrUpdateContent="bs-modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card" style="margin-bottom: 0;">
+                        <div class="card-header">
+                            <strong *ngIf="!content.content_id">Add Content</strong>
+                            <strong *ngIf="content.content_id">Edit Content</strong>
+                            <button type="button" class="close" (click)="addOrUpdateContent.hide();backupData()">&times;</button>
+                        </div>
+                        <div class="card-body">
+                            <form name="form" [formGroup]="contentForm">
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label" for="select1">Name<b style="color:red">*</b></label>
+                                    <div class="col-md-9">
+                                        <input type="text" maxlength="50" formControlName="Name" class="form-control"
+                                            placeholder="Name" [(ngModel)]="content.content_name" [ngClass]="{ 'is-invalid': submitted && f.Name.errors }" />
+                                        <div *ngIf="submitted && f.Name.errors" class="invalid-feedback">
+                                            <div *ngIf="f.Name.errors.required" style="color:red">Content Name is required</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group row">
+                                  <label class="col-md-3 col-form-label" for="text-input">Long Description</label>
+                                  <div class="col-md-9">
+                                      <textarea type="text" maxlength="500" rows="5" formControlName="lonDes" class="form-control" placeholder="Enter LongDescription"
+                                          [(ngModel)]="content.content_full_desc" [ngClass]="{ 'is-invalid': submitted && f.lonDes.errors }"
+                                         ></textarea>  
+                                          <div *ngIf="submitted && f.lonDes.errors" class="invalid-feedback">
+                                            <div *ngIf="f.lonDes.errors.required" style="color:red">Long
+                                                Description is required</div>
+                                        </div>                                        
+                                  </div>
+                              </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label" for="text-input">Short Description <b style="color:red">*</b></label>
+                                    <div class="col-md-9">
+                                        <input type="text" maxlength="50" formControlName="shortDes" class="form-control"
+                                            placeholder=" Description" [(ngModel)]="content.content_short_desc" [ngClass]="{ 'is-invalid': submitted && f.shortDes.errors }" />
+                                        <div *ngIf="submitted && f.shortDes.errors" class="invalid-feedback">
+                                            <div *ngIf="f.shortDes.errors.required" style="color:red">Short
+                                                Description is required</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                  <label class="col-md-3 col-form-label" for="select1">Price<b style="color:red">*</b></label>
+                                  <div class="col-md-9">
+                                      <input type="text" maxlength="50" formControlName="Price" class="form-control"
+                                          placeholder="Name" [(ngModel)]="content.content_price" [ngClass]="{ 'is-invalid': submitted && f.Price.errors }" />
+                                      <div *ngIf="submitted && f.Price.errors" class="invalid-feedback">
+                                          <div *ngIf="f.Price.errors.required" style="color:red">Price Required</div>
+                                      </div>
+                                  </div>
+                              </div>
+
+                                <div class="form-group row" *ngIf="!content.content_id">
+                                    <label class="col-md-3 col-form-label" for="text-input">Image</label>
+                                    <div class="col-md-9">
+                                        <img *ngIf="userimagePreview" [src]="userimagePreview.result" height="50">
+                                    </div>
+                                </div>
+                                <div *ngIf="content.content_id">
+                                    test{{isShowOriginalImg}}
+                                    <div class="form-group row" *ngIf="!isShowOriginalImg">
+                                        <label class="col-md-3 col-form-label" for="text-input">Image first</label>
+                                        <div class="col-md-9">
+                                            <img [src]="content.content_image" height="50">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" *ngIf="isShowOriginalImg">
+                                        <label class="col-md-3 col-form-label" for="text-input">Image latest</label>
+                                        <div class="col-md-9">
+                                            <img *ngIf="userimagePreview" [src]="userimagePreview.result" height="50">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label" for="text-input"></label>
+                                    <div class="col-md-9">
+                                        <input type="file" name="photo" accept="image/*" (change)="getFileDetails($event)" />
+                                    </div>
+                                </div>
+                                <!-- 
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label" for="text-input">Active From<b style="color:red">*</b></label>
+                                    <div class="col-md-9">
+                                        <input type="datetime-local" maxlength="10" formControlName="StartDate" class="form-control"
+                                            placeholder="Activity StartDate" [(ngModel)]="content.deal_active_from | date:'yyyy-MM-ddTHH:mm'"
+                                            [ngClass]="{ 'is-invalid': submitted && f.StartDate.errors }">
+                                        <div *ngIf="submitted && f.StartDate.errors" class="invalid-feedback">
+                                            <div *ngIf="f.StartDate.errors.required" style="color:red">Active From is
+                                                required</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label" for="text-input">Active To<b style="color:red">*</b></label>
+                                    <div class="col-md-9">
+                                        <input type="datetime-local" maxlength="10" formControlName="EndDate" class="form-control"
+                                            placeholder="Activity EndDate" [(ngModel)]="content.deal_active_to | date:'yyyy-MM-ddTHH:mm'" [ngClass]="{ 'is-invalid': submitted && f.EndDate.errors }">
+                                        <div *ngIf="submitted && f.EndDate.errors" class="invalid-feedback">
+                                            <div *ngIf="f.EndDate.errors.required" style="color:red">Active To is
+                                                required</div>
+                                        </div>
+                                    </div>
+                                </div> -->
+
+                                <div *ngIf="content.content_id">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 col-form-label" for="text-input">Status</label>
+                                        <div class="col-md-8">
+                                            <select class="form-control" name="vehicletype1" [(ngModel)]="content.content_status"
+                                                [(ngModel)]="showMoreControls" [ngModelOptions]="{standalone: true}">
+                                                <option value="1">Active</option>
+                                                <option value="0">In active</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span *ngIf="!content.content_id">
+                                    <button style="margin-left: 26%;" class="btn btn-primary" (click)="addOrUpdateContent()">ADD</button>
+                                </span>
+                                <span *ngIf="content.content_id">
+                                    <button style="margin-left: 26%;" class="btn btn-primary" (click)="addOrUpdateContent()">Update</button>
+                                </span>
+                                &nbsp;&nbsp;
+                                <button type="button" id="CloseButton" class="btn btn-secondary" (click)="addOrUpdateContent.hide();backupData()">Close</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
