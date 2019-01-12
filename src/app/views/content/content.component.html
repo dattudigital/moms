@@ -43,7 +43,7 @@
                 <td>{{content.content_price}}</td>
                 <td> <button class="btn-primary" data-toggle="modal" (click)="addOrUpdateContent.show();editContent(content,i)"><i
                       class="fa fa-edit"></i></button></td>
-                <td> <button class="btn-danger" data-toggle="modal" (click)="dangerModal.show();deleteContent(content,i)"><i
+                <td> <button class="btn-danger" data-toggle="modal" (click)="contentDelete.show();deleteContent(content,i)"><i
                       class="fa fa-trash"></i></button></td>
               </tr>
             </tbody>
@@ -193,6 +193,50 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div bsModal #contentDelete="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-danger" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Content</h4>
+                <button type="button" class="close" (click)="contentDelete.hide()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure to Delete ?</p>
+            </div>
+            <div class="container">
+                <table class="table table-bordered table-striped table-sm" style="padding:10px;">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Short Description</th>
+                            <th>Image</th>
+                            <th>Amount</th>
+                          </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngIf="deleteRecord">
+                            <td>{{deleteRecord.content_name}}</td>
+                            <td>{{deleteRecord.content_full_desc}}</td>
+                            <td>{{deleteRecord.content_short_desc}}</td>
+                            <td> <img [src]="deleteRecord.content_image" height="50"></td>
+                            <td>{{deleteRecord.content_price}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="contentDelete.hide()">Close</button>
+                <button type="button" class="btn btn-danger" (click)="contentDelete.hide();deleteAlert();">Delete</button>
             </div>
         </div>
     </div>
