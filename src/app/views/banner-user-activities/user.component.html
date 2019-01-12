@@ -1,1 +1,236 @@
-user 
+<ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="medium" color="#fff" type="ball-scale-multiple">
+    <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+
+<ng2-toasty [position]="'top-right'"></ng2-toasty>
+
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-align-justify"></i> Registered User List
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>DOB</th>
+                                <th>Gender</th>
+                                <th>Image</th>
+                                <th>Age</th>
+                                <th>City</th>
+                                <th>Mobile</th>
+                                <th>Email</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let user of users | paginate: { itemsPerPage: 3, currentPage: currentPage };let i=index;">
+                                <td>{{user.fname}}</td>
+                                <td>{{user.lname}}</td>
+                                <td>{{user.dob}}</td>
+                                <td>{{user.gender}}</td>
+                                <td> <img [src]="user.profile_image" height="50"></td>
+                                <td>{{user.age}}</td>
+                                <td>{{user.city}}</td>
+                                <td>{{user.mobile}}</td>
+                                <td>{{user.email}}</td>
+                                <td> <button class="btn-primary" data-toggle="modal" (click)="updateUser.show();editUser(user,i)"><i
+                                            class="fa fa-edit"></i></button></td>
+                                <td> <button class="btn-danger" data-toggle="modal" (click)="deleteUser.show();deleteUsers(user,i)"><i
+                                            class="fa fa-trash"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div bsModal #updateUser="bs-modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card" style="margin-bottom: 0;">
+                        <div class="card-header">
+                            <strong>Edit Users</strong>
+                            <button type="button" class="close" (click)="updateUser.hide();backupData()">&times;</button>
+                        </div>
+                        <div class="card-body">
+                            <form name="form" [formGroup]="userForm">
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label" for="select1">First Name<b style="color:red">*</b></label>
+                                    <div class="col-md-9">
+                                        <input type="text" maxlength="50" formControlName="fname" class="form-control"
+                                            placeholder="Name" [(ngModel)]="user.fname" [ngClass]="{ 'is-invalid': submitted && f.fname.errors }" />
+                                        <div *ngIf="submitted && f.fname.errors" class="invalid-feedback">
+                                            <div *ngIf="f.fname.errors.required" style="color:red">First Name is
+                                                required</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label" for="text-input">Last Name <b style="color:red">*</b></label>
+                                    <div class="col-md-9">
+                                        <input type="text" maxlength="50" formControlName="lname" class="form-control"
+                                            placeholder=" Description" [(ngModel)]="user.lname" [ngClass]="{ 'is-invalid': submitted && f.lname.errors }" />
+                                        <div *ngIf="submitted && f.lname.errors" class="invalid-feedback">
+                                            <div *ngIf="f.lname.errors.required" style="color:red">Last Name is
+                                                required</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label" for="text-input">DOB</label>
+                                    <div class="col-md-9">
+                                        <input type="date" maxlength="50" formControlName="dob" class="form-control"
+                                            placeholder=" Description" [(ngModel)]="user.dob" [ngClass]="{ 'is-invalid': submitted && f.dob.errors }" />
+                                        <div *ngIf="submitted && f.dob.errors" class="invalid-feedback">
+                                            <div *ngIf="f.dob.errors.required" style="color:red">Last Name is required</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label" for="select1">Age<b style="color:red">*</b></label>
+                                    <div class="col-md-9">
+                                        <input type="text" maxlength="50" name="age" class="form-control" placeholder=" Description"
+                                            [(ngModel)]="user.age" [ngModelOptions]="{standalone: true}" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="form-group row" *ngIf="!isShowOriginalImg">
+                                        <label class="col-md-3 col-form-label" for="text-input">Image first</label>
+                                        <div class="col-md-9">
+                                            <img [src]="user.profile_image" height="50">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" *ngIf="isShowOriginalImg">
+                                        <label class="col-md-3 col-form-label" for="text-input">Image latest</label>
+                                        <div class="col-md-9">
+                                            <img *ngIf="userimagePreview" [src]="userimagePreview.result" height="50">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label" for="text-input"></label>
+                                    <div class="col-md-9">
+                                        <input type="file" name="photo" accept="image/*" (change)="getFileDetails($event,'p')" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label" for="text-input">City</label>
+                                    <div class="col-md-9">
+                                        <input type="text" maxlength="50" name="city" class="form-control" placeholder=" Description"
+                                            [(ngModel)]="user.city" [ngModelOptions]="{standalone: true}" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label" for="text-input">Mobile <b style="color:red">*</b></label>
+                                    <div class="col-md-9">
+                                        <input type="text" maxlength="50" formControlName="mobile" class="form-control"
+                                            placeholder=" Description" [(ngModel)]="user.lname" [ngClass]="{ 'is-invalid': submitted && f.mobile.errors }" />
+                                        <div *ngIf="submitted && f.mobile.errors" class="invalid-feedback">
+                                            <div *ngIf="f.mobile.errors.required" style="color:red">Mobile
+                                                required</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label" for="text-input">Email <b style="color:red">*</b></label>
+                                    <div class="col-md-9">
+                                        <input type="text" maxlength="50" formControlName="email" class="form-control"
+                                            placeholder=" Description" [(ngModel)]="user.email" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+                                        <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                                            <div *ngIf="f.email.errors.required" style="color:red">Email
+                                                required</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 col-form-label" for="text-input">Status</label>
+                                        <div class="col-md-8">
+                                            <select class="form-control" name="vehicletype1" [(ngModel)]="user.status"
+                                                [(ngModel)]="showMoreControls" [ngModelOptions]="{standalone: true}">
+                                                <option value="1">Active</option>
+                                                <option value="0">In active</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span>
+                                    <button style="margin-left: 26%;" class="btn btn-primary" (click)="addOrUpdateDeal()">Update</button>
+                                </span>
+                                &nbsp;&nbsp;
+                                <button type="button" id="CloseButton" class="btn btn-secondary" (click)="updateUser.hide();backupData()">Close</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div bsModal #deleteUser="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-danger" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete User</h4>
+                <button type="button" class="close" (click)="deleteUser.hide()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure to Delete ?</p>
+            </div>
+            <div class="container" style="overflow-x: scroll;">
+                <table class="table table-bordered table-striped table-sm" style="padding:10px;">
+                    <thead>
+                        <tr>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>DOB</th>
+                            <th>Gender</th>
+                            <th>Image</th>
+                            <th>Age</th>
+                            <th>City</th>
+                            <th>Mobile</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngIf="deleteRecord">
+                            <td>{{deleteRecord.fname}}</td>
+                            <td>{{deleteRecord.lname}}</td>
+                            <td>{{deleteRecord.dob}}</td>
+                            <td>{{deleteRecord.gender}}</td>
+                            <td> <img [src]="deleteRecord.profile_image" height="50"></td>
+                            <td>{{deleteRecord.age}}</td>
+                            <td>{{deleteRecord.city}}</td>
+                            <td>{{deleteRecord.mobile}}</td>
+                            <td>{{deleteRecord.email}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="deleteUser.hide()">Close</button>
+                <button type="button" class="btn btn-danger" (click)="deleteUser.hide();deleteAlert();">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
