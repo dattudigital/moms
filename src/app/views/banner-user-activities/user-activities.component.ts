@@ -4,6 +4,7 @@ import { BeautyTipsService } from '../../services/beauty-tips.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastyService, ToastOptions } from 'ng2-toasty';
+import { UsersService } from '../../services/users.service';
 
 @Component({
     templateUrl: 'user-activities.component.html'
@@ -31,33 +32,18 @@ export class UserActivitiesComponent implements OnInit {
         timeout: 3000,
         theme: 'default'
     };
+    userActivitys: any = [];
 
-    banner: any = {
-        'deal_id': null,
-        'deal_name': '',
-        'deal_short_desc': '',
-        'deal_long_desc': '',
-        'deal_type': '',
-        'deal_image': '',
-        'profile_name': '',
-        'deal_status': ''
-    }
-    bannerForm: FormGroup;
-    dealAdd: any = [];
-    submitted = false;
-    bannerData: any;
-    copiedRow = '';
-    isShowOriginalImg: boolean = false;
-    deleteRecord: '';
-    currentPage: any = 1;
-    totalItems: number;
-    userimagePreview: any;
-    userImage: string;
-
-    constructor() {
+    constructor(private service: UsersService) {
 
     }
     ngOnInit() {
-
+        this.service.getUserActivities().subscribe(res => {
+            console.log("***********")
+            console.log(res.json())
+            if (res.json().status == true) {
+                this.userActivitys = res.json().result
+            }
+        })
     }
 }

@@ -16,4 +16,8 @@ export class UsersService {
   public getUser() {
     return this.http.get(environment.host + 'users');
   }
+
+  public getUserActivities() {
+    return this.http.get(environment.host + 'user-activities');
+  }
 }
