@@ -5,14 +5,14 @@ export const navItems = [
     icon: 'icon-home'
   },
   {
-    name: 'Faqs',
-    url: '/faqs',
-    icon: 'icon-plus'
+    name: 'users',
+    url: '/all/users',
+    icon: 'icon-drop'
   },
   {
-    name: 'Beauty Tips',
-    url: '/beauty-tips',
-    icon: 'icon-user-female'
+    name: 'user-activities',
+    url: '/all/user-activities',
+    icon: 'icon-drop'
   },
   {
     name: 'Activities',
@@ -28,5 +28,10 @@ export const navItems = [
     name: 'Content',
     url: '/content',
     icon: 'icon-plus'
+  },
+  {
+    name: 'banners',
+    url: '/all/banners',
+    icon: 'icon-drop'
   }
 ];
