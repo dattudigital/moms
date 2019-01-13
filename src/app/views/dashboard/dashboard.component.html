@@ -10,8 +10,8 @@ type="ball-scale-multiple">
     <div class="col-sm-6 col-lg-3">
       <div class="card text-white bg-primary" routerLink="/users-list">
         <div class="card-body pb-0">
-          <div class="text-value" *ngIf="completeDashboardData">{{this.completeDashboardData.totaluser }}</div>
-          <div>Total Users</div>
+          <div class="text-value" *ngIf="completeDashboardData">{{completeDashboardData.totalactivities }}</div>
+          <div>Total Activities</div>
         </div>
         <div class="chart-wrapper mt-3 mx-3" style="height:70px;">
         <a><i class="fa fa-users fa-lg mt-4 fa-3x"></i></a>
@@ -21,8 +21,8 @@ type="ball-scale-multiple">
     <div class="col-sm-6 col-lg-3">
       <div class="card text-white bg-info" routerLink="/testmonials/video">
         <div class="card-body pb-0">
-          <div class="text-value" *ngIf="completeDashboardData">{{completeDashboardData.videototal}}</div>
-          <div>Total Video Testmonials</div>
+          <div class="text-value" *ngIf="completeDashboardData">{{completeDashboardData.todayactivity}}</div>
+          <div>Today Activities</div>
         </div>
         <div class="chart-wrapper mt-3 mx-3" style="height:70px;">
           <i class="fa fa-video-camera fa-lg mt-4 fa-3x"></i>
@@ -32,8 +32,8 @@ type="ball-scale-multiple">
     <div class="col-sm-6 col-lg-3">
       <div class="card text-white bg-warning"  routerLink="/testmonials/written">
         <div class="card-body pb-0">
-          <div class="text-value" *ngIf="completeDashboardData" >{{completeDashboardData.writtentotal}}</div>
-          <div>Total Written Testmonials</div>
+          <div class="text-value" *ngIf="completeDashboardData" >{{completeDashboardData.totaluser}}</div>
+          <div>Register Users</div>
         </div>
         <div class="chart-wrapper mt-3" style="height:70px;">
           <i class="fa fa-comments-o fa-lg mt-4 fa-3x" style="margin-left: 15px;"></i>
@@ -43,8 +43,8 @@ type="ball-scale-multiple">
     <div class="col-sm-6 col-lg-3">
       <div class="card text-white bg-danger"  routerLink="/refferal-rewards/user-activities">        
         <div class="card-body pb-0">
-          <div class="text-value" *ngIf="completeDashboardData">{{completeDashboardData.refferaltotal}}</div>
-          <div>Total User Activities</div>
+          <div class="text-value" *ngIf="completeDashboardData">{{completeDashboardData.useractivitycount}}</div>
+          <div>User Activities</div>
         </div>
         <div class="chart-wrapper mt-3 mx-3" style="height:70px;">
           <i class="fa fa-vcard-o fa-lg mt-4 fa-3x"></i>
@@ -56,8 +56,8 @@ type="ball-scale-multiple">
     <div class="col-sm-6 col-lg-3">
       <div class="card text-white bg-primary" routerLink="/beauty-tips">
         <div class="card-body pb-0">
-          <div class="text-value" *ngIf="completeDashboardData">{{completeDashboardData.totalbeautytip}}</div>
-          <div>Total Beauty Tips</div>
+          <div class="text-value" *ngIf="completeDashboardData">{{completeDashboardData.inactiveuser}}</div>
+          <div>In Active Users</div>
         </div>
         <div class="chart-wrapper mt-3 mx-3" style="height:70px;">
           <i class="fa fa-lightbulb-o fa-lg mt-4 fa-3x"></i>
@@ -67,8 +67,8 @@ type="ball-scale-multiple">
     <div class="col-sm-6 col-lg-3">
       <div class="card text-white bg-warning"  routerLink="/refferal-rewards/perks">
         <div class="card-body pb-0">
-          <div class="text-value" *ngIf="completeDashboardData">{{completeDashboardData.perktotal}}</div>
-          <div>Total Perks </div>
+          <div class="text-value" *ngIf="completeDashboardData">{{completeDashboardData.dealscount}}</div>
+          <div>Total Deals</div>
         </div>
         <div class="chart-wrapper mt-3" style="height:70px;">
           <i class="fa fa-envelope-open-o fa-lg mt-4 fa-3x" style="margin-left: 15px;"></i>
@@ -78,8 +78,8 @@ type="ball-scale-multiple">
     <div class="col-sm-6 col-lg-3">
       <div class="card text-white bg-danger"  routerLink="/mindbody-coupons">
         <div class="card-body pb-0">
-          <div class="text-value" *ngIf="completeDashboardData">{{completeDashboardData.totalcoupon}}</div>
-          <div>Total Mind Body Coupons</div>
+          <div class="text-value" *ngIf="completeDashboardData">{{this.completeDashboardData.contentcount}}</div>
+          <div>Total Content</div>
         </div>
         <div class="chart-wrapper mt-3 mx-3" style="height:70px;">
           <i class="fa fa-envelope-open-o fa-lg mt-4 fa-3x"></i>
@@ -90,8 +90,8 @@ type="ball-scale-multiple">
     <div class="col-sm-6 col-lg-3">
         <div class="card text-white bg-warning"  routerLink="/testmonials/written-edit">
           <div class="card-body pb-0">
-            <div class="text-value" *ngIf="completeDashboardData">{{completeDashboardData.writtentotal}}</div>
-            <div>Total Testmonials Rating < 3 </div>
+            <div class="text-value" *ngIf="completeDashboardData">{{completeDashboardData.videocount}}</div>
+            <div>Video Count</div>
           </div>
           <div class="chart-wrapper mt-3" style="height:70px;">
             <i class="fa fa-comments-o fa-lg mt-4 fa-3x" style="margin-left: 15px;"></i>

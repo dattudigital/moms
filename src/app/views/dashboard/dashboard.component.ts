@@ -19,14 +19,10 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
   
     this.service.getallCountForDashboard().subscribe(res => {
-
-      this.completeDashboardData = res.json().data;
+      console.log(res.json())
+      this.completeDashboardData = res.json();
     })
-    this.service.getGraphdata().subscribe(response => {
-      this.garphData = response.json().data;
-      this.mainChartData1Test = this.transformJsonToCustomFormat(response.json().data);
-      this.mainChartLabels = this.transformJsonToCustomFormat1(response.json().data);
-    });
+
      this.mainChartData1.push(1,1,2,2,1,1,1,2,2,2,4,3,1,1,3,3,2,1,2,2,2,1); 
   }
 

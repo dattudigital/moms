@@ -14,7 +14,7 @@ export class DashboardService {
     return this.http.get(environment.host + 'graphs');
   }
   public getallCountForDashboard() {
-    return this.http.get(environment.host + 'web-dashboard');
+    return this.http.get(environment.host + 'webdashboard');
   }
 
 }
