@@ -12,30 +12,61 @@
                     <i class="fa fa-align-justify"></i> User Activity List
                 </div>
                 <div class="card-body">
-                    <table class="table table-bordered table-striped table-sm">
-                        <thead>
-                            <tr>
-                                <th>User Name</th>
-                                <th>Activity</th>
-                                <th>Started On</th>
-                                <th>Start Time</th>
-                                <th>End Time</th>
-                                <th>Activity Type</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let userActivity of userActivitys | paginate: { itemsPerPage: 3, currentPage: currentPage };let i=index;">
-                                <td>{{userActivity.fname +" "+userActivity.lname}}</td>
-                                <td>{{userActivity.activity_name}}</td>
-                                <td>{{userActivity.user_activity_startedon}}</td>
-                                <td>{{userActivity.user_activity_start_time}}</td>
-                                <td>{{userActivity.user_activity_end_time}}</td>
-                                <td>{{userActivity.user_activity_type}}</td>
-                                <td>{{userActivity.user_activity_status}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <select name="activityname" class="form-control custom-select-value" [(ngModel)]="selectedUserId">
+                                <option [ngValue]="undefined" disabled selected>Select User Name</option>
+                                <option *ngFor="let user of users" [ngValue]="user.user_id">{{user.fname+"
+                                    "+user.lname}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-control" name=" activity" [(ngModel)]="selctedActivityId">
+                                <option [ngValue]="undefined" disabled selected>Select Activities</option>
+                                <option *ngFor="let activity of activitys" [ngValue]=" activity.activity_id">{{activity.activity_name}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="date" class="form-control" name="startDate" [(ngModel)]="startDate">
+                        </div>
+                        <div class="col-md-2">
+                            <input type="date" class="form-control" name="endDate" [(ngModel)]="endDate">
+                        </div>
+                        <div class="col-lg-3">
+                            <button class="btn btn-sm btn-primary login-submit-cs" (click)="search()" type="submit">Go
+                            </button>
+                            &nbsp;
+                            <button class="btn btn-sm btn-warning login-submit-cs" (click)="reset()" type="submit">Reset
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <table class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th>User Name</th>
+                                    <th>Activity</th>
+                                    <th>Started On</th>
+                                    <th>Start Time</th>
+                                    <th>End Time</th>
+                                    <th>Activity Type</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let userActivity of userActivitys | paginate: { itemsPerPage: 3, currentPage: currentPage };let i=index;">
+                                    <td>{{userActivity.fname +" "+userActivity.lname}}</td>
+                                    <td>{{userActivity.activity_name}}</td>
+                                    <td>{{userActivity.user_activity_startedon}}</td>
+                                    <td>{{userActivity.user_activity_start_time}}</td>
+                                    <td>{{userActivity.user_activity_end_time}}</td>
+                                    <td>{{userActivity.user_activity_type}}</td>
+                                    <td>{{userActivity.user_activity_status}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
                 </div>
             </div>

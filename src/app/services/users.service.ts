@@ -17,7 +17,7 @@ export class UsersService {
     return this.http.get(environment.host + 'users');
   }
 
-  public getUserActivities() {
-    return this.http.get(environment.host + 'user-activities');
+  public getUserActivities(URL:any) {
+    return this.http.get(environment.host + 'user-activities'+URL);
   }
 }
