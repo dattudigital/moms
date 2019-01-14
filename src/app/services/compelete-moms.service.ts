@@ -9,7 +9,10 @@ export class CompeleteMomsService {
   dealTypeData: any = [];
   usersData: any = [];
   dealsData: any = [];
-  ContentData:any=[];
+  ContentData: any = [];
+  userActivitysData: any = [];
+  activitys: any = [];
+  users: any = [];
 
   public addDealType(dealType) {
     this.dealTypeData = dealType
@@ -35,11 +38,35 @@ export class CompeleteMomsService {
     return this.dealsData
   }
 
-  public addContentData(content){
-    this.ContentData =content
+  public addContentData(content) {
+    this.ContentData = content
   }
 
-  public getContentData(){
+  public getContentData() {
     return this.ContentData
+  }
+
+  public addUserActivityData(userActivity) {
+    this.userActivitysData = userActivity
+  }
+
+  public getUserActivityData() {
+    return this.userActivitysData;
+  }
+
+  public addActivityData(activity) {
+    this.activitys = activity
+  }
+
+  public getActivityData() {
+    return this.activitys
+  }
+
+  public addUsers(user) {
+    this.users = user;
+  }
+
+  public getUsers() {
+    return this.users;
   }
 }

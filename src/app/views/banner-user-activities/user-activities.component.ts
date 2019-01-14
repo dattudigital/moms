@@ -1,11 +1,10 @@
-import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
-import { AlertConfig } from 'ngx-bootstrap/alert';
-import { BeautyTipsService } from '../../services/beauty-tips.service';
+import { Component, OnInit } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastyService, ToastOptions } from 'ng2-toasty';
 import { UsersService } from '../../services/users.service';
 import { UserActivitiesService } from '../../services/user-activities.service';
+import { CompeleteMomsService } from '../../services/compelete-moms.service';
+
 @Component({
     templateUrl: 'user-activities.component.html'
 })
@@ -32,57 +31,74 @@ export class UserActivitiesComponent implements OnInit {
         timeout: 3000,
         theme: 'default'
     };
-    userActivitys: any = [];
+    userActivitysData: any = [];
     activitys: any;
     users: any;
     selectedUserId: any;
     selctedActivityId: any;
-    startDate:any;
-    endDate:any;
-    constructor(private service: UsersService, private activitiyService: UserActivitiesService) {
-
+    startDate: any;
+    endDate: any;
+    constructor(private service: UsersService, private completeservice: CompeleteMomsService, private spinner: NgxSpinnerService, private activitiyService: UserActivitiesService) {
     }
 
     ngOnInit() {
-        this.service.getUserActivities('').subscribe(res => {
-            if (res.json().status == true) {
-                this.userActivitys = res.json().result
-            }
-        })
+        let _activities = this.completeservice.getUserActivityData();
+        if (Object.keys(_activities).length) {
+            this.userActivitysData = _activities
+        } else {
+            this.service.getUserActivities('').subscribe(res => {
+                if (res.json().status == true) {
+                    this.userActivitysData = res.json().result
+                    this.completeservice.addUserActivityData(res.json().result)
+                }
+            })
+        }
 
-        this.activitiyService.getActivity().subscribe(res => {
-            if (res.json().status == true) {
-                this.activitys = res.json().result
-            }
-        })
-        this.service.getUser().subscribe(res => {
-            this.users = res.json()
-        })
+        let _activity = this.completeservice.getActivityData();
+        if (Object.keys(_activity).length) {
+            this.activitys = _activity
+        } else {
+            this.activitiyService.getActivity().subscribe(res => {
+                if (res.json().status == true) {
+                    this.activitys = res.json().result;
+                    this.completeservice.addActivityData(res.json().result)
+                }
+            });
+        }
+
+        let _user = this.completeservice.getUsers();
+        if (Object.keys(_user).length) {
+            this.users = _user;
+        } else {
+            this.service.getUser().subscribe(res => {
+                this.users = res.json()
+            })
+        }
     }
 
-
-    search(){
+    search() {
         var url = '';
         if (this.startDate) {
-          url = url + 'startdate=' + this.startDate;
+            url = url + 'startdate=' + this.startDate;
         }
         if (this.endDate) {
-          url = url + '&enddate=' + this.endDate;
+            url = url + '&enddate=' + this.endDate;
         }
         if (this.selectedUserId) {
-          url = url + '&userid=' + this.selectedUserId;
+            url = url + '&userid=' + this.selectedUserId;
         }
         if (this.selctedActivityId) {
-          url = url + '&activityid=' + this.selctedActivityId;
+            url = url + '&activityid=' + this.selctedActivityId;
         }
+        console.log(url)
         this.service.getUserActivities(url).subscribe(res => {
             if (res.json().status == true) {
-                this.userActivitys = res.json().result
+                this.userActivitysData = res.json().result
             }
         })
     }
 
-    reset(){
+    reset() {
         this.selectedUserId = undefined;
         this.selctedActivityId = undefined;
         this.startDate = null;

@@ -55,7 +55,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let userActivity of userActivitys | paginate: { itemsPerPage: 3, currentPage: currentPage };let i=index;">
+                                <tr *ngFor="let userActivity of userActivitysData | paginate: { itemsPerPage: 3, currentPage: currentPage };let i=index;">
                                     <td>{{userActivity.fname +" "+userActivity.lname}}</td>
                                     <td>{{userActivity.activity_name}}</td>
                                     <td>{{userActivity.user_activity_startedon}}</td>
