@@ -1,61 +1,59 @@
 <ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="medium" color="#fff" type="ball-scale-multiple">
-  <p style="font-size: 20px; color: white">Loading...</p>
+    <p style="font-size: 20px; color: white">Loading...</p>
 </ngx-spinner>
 
 <ng2-toasty [position]="'top-right'"></ng2-toasty>
 
 <div class="card-body">
-  <div class="row">
-    <div class="col-6 col-sm-4 col-md text-center">
-      <button (click)="addOrUpdateContent.show();removeFields()" class="btn btn-primary" style="float: right;"><i
-          class="fa fa-lightbulb-o"></i>&nbsp;Create
-        Content</button>
+    <div class="row">
+        <div class="col-6 col-sm-4 col-md text-center">
+            <button (click)="addOrUpdateContent.show();removeFields()" class="btn btn-primary" style="float: right;"><i
+                    class="fa fa-lightbulb-o"></i>&nbsp;Create
+                Content</button>
+        </div>
     </div>
-  </div>
 </div>
 
 <div class="animated fadeIn">
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="card">
-        <div class="card-header">
-          <i class="fa fa-align-justify"></i> Content List
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-align-justify"></i> Content List
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Short Description</th>
+                                <th>Image</th>
+                                <th>Amount</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let content of ContentData | paginate: { itemsPerPage: 3, currentPage: currentPage };let i=index;">
+                                <td>{{content.content_name}}</td>
+                                <td>{{content.content_full_desc}}</td>
+                                <td>{{content.content_short_desc}}</td>
+                                <td> <img [src]="content.content_image" height="50"></td>
+                                <td>{{content.content_price}}</td>
+                                <td> <button class="btn-primary" data-toggle="modal" (click)="addOrUpdateContent.show();editContent(content,i)"><i
+                                            class="fa fa-edit"></i></button></td>
+                                <td> <button class="btn-danger" data-toggle="modal" (click)="contentDelete.show();deleteContent(content,i)"><i
+                                            class="fa fa-trash"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-          <table class="table table-bordered table-striped table-sm">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Short Description</th>
-                <th>Image</th>
-                <th>Amount</th>
-                <th>Edit</th>
-                <th>Delete</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let content of ContentData | paginate: { itemsPerPage: 3, currentPage: currentPage };let i=index;">
-                <td>{{content.content_name}}</td>
-                <td>{{content.content_full_desc}}</td>
-                <td>{{content.content_short_desc}}</td>
-                <td> <img [src]="content.content_image" height="50"></td>
-                <td>{{content.content_price}}</td>
-                <td> <button class="btn-primary" data-toggle="modal" (click)="addOrUpdateContent.show();editContent(content,i)"><i
-                      class="fa fa-edit"></i></button></td>
-                <td> <button class="btn-danger" data-toggle="modal" (click)="contentDelete.show();deleteContent(content,i)"><i
-                      class="fa fa-trash"></i></button></td>
-              </tr>
-            </tbody>
-          </table>
-          <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
-        </div>
-      </div>
     </div>
-  </div>
 </div>
-
-
 
 <div bsModal #addOrUpdateContent="bs-modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
     aria-hidden="true">
@@ -77,28 +75,29 @@
                                         <input type="text" maxlength="50" formControlName="Name" class="form-control"
                                             placeholder="Name" [(ngModel)]="content.content_name" [ngClass]="{ 'is-invalid': submitted && f.Name.errors }" />
                                         <div *ngIf="submitted && f.Name.errors" class="invalid-feedback">
-                                            <div *ngIf="f.Name.errors.required" style="color:red">Content Name is required</div>
+                                            <div *ngIf="f.Name.errors.required" style="color:red">Content Name is
+                                                required</div>
                                         </div>
                                     </div>
                                 </div>
-                                
                                 <div class="form-group row">
-                                  <label class="col-md-3 col-form-label" for="text-input">Long Description</label>
-                                  <div class="col-md-9">
-                                      <textarea type="text" maxlength="500" rows="5" formControlName="lonDes" class="form-control" placeholder="Enter LongDescription"
-                                          [(ngModel)]="content.content_full_desc" [ngClass]="{ 'is-invalid': submitted && f.lonDes.errors }"
-                                         ></textarea>  
-                                          <div *ngIf="submitted && f.lonDes.errors" class="invalid-feedback">
+                                    <label class="col-md-3 col-form-label" for="text-input">Long Description</label>
+                                    <div class="col-md-9">
+                                        <textarea type="text" maxlength="500" rows="5" formControlName="lonDes" class="form-control"
+                                            placeholder="Enter LongDescription" [(ngModel)]="content.content_full_desc"
+                                            [ngClass]="{ 'is-invalid': submitted && f.lonDes.errors }"></textarea>
+                                        <div *ngIf="submitted && f.lonDes.errors" class="invalid-feedback">
                                             <div *ngIf="f.lonDes.errors.required" style="color:red">Long
                                                 Description is required</div>
-                                        </div>                                        
-                                  </div>
-                              </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="text-input">Short Description <b style="color:red">*</b></label>
                                     <div class="col-md-9">
                                         <input type="text" maxlength="50" formControlName="shortDes" class="form-control"
-                                            placeholder=" Description" [(ngModel)]="content.content_short_desc" [ngClass]="{ 'is-invalid': submitted && f.shortDes.errors }" />
+                                            placeholder=" Description" [(ngModel)]="content.content_short_desc"
+                                            [ngClass]="{ 'is-invalid': submitted && f.shortDes.errors }" />
                                         <div *ngIf="submitted && f.shortDes.errors" class="invalid-feedback">
                                             <div *ngIf="f.shortDes.errors.required" style="color:red">Short
                                                 Description is required</div>
@@ -106,16 +105,15 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                  <label class="col-md-3 col-form-label" for="select1">Price<b style="color:red">*</b></label>
-                                  <div class="col-md-9">
-                                      <input type="text" maxlength="50" formControlName="Price" class="form-control"
-                                          placeholder="Name" [(ngModel)]="content.content_price" [ngClass]="{ 'is-invalid': submitted && f.Price.errors }" />
-                                      <div *ngIf="submitted && f.Price.errors" class="invalid-feedback">
-                                          <div *ngIf="f.Price.errors.required" style="color:red">Price Required</div>
-                                      </div>
-                                  </div>
-                              </div>
-
+                                    <label class="col-md-3 col-form-label" for="select1">Price<b style="color:red">*</b></label>
+                                    <div class="col-md-9">
+                                        <input type="text" maxlength="50" formControlName="Price" class="form-control"
+                                            placeholder="price" [(ngModel)]="content.content_price" [ngClass]="{ 'is-invalid': submitted && f.Price.errors }" />
+                                        <div *ngIf="submitted && f.Price.errors" class="invalid-feedback">
+                                            <div *ngIf="f.Price.errors.required" style="color:red">Price Required</div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="form-group row" *ngIf="!content.content_id">
                                     <label class="col-md-3 col-form-label" for="text-input">Image</label>
                                     <div class="col-md-9">
@@ -168,11 +166,10 @@
                                         </div>
                                     </div>
                                 </div> -->
-
                                 <div *ngIf="content.content_id">
                                     <div class="form-group row">
                                         <label class="col-md-3 col-form-label" for="text-input">Status</label>
-                                        <div class="col-md-8">
+                                        <div class="col-md-9">
                                             <select class="form-control" name="vehicletype1" [(ngModel)]="content.content_status"
                                                 [(ngModel)]="showMoreControls" [ngModelOptions]="{standalone: true}">
                                                 <option value="1">Active</option>
@@ -182,10 +179,10 @@
                                     </div>
                                 </div>
                                 <span *ngIf="!content.content_id">
-                                    <button style="margin-left: 26%;" class="btn btn-primary" (click)="addOrUpdateContent()">ADD</button>
+                                    <button style="margin-left: 26%;" class="btn btn-primary" (click)="addOrUpdateContents()">ADD</button>
                                 </span>
                                 <span *ngIf="content.content_id">
-                                    <button style="margin-left: 26%;" class="btn btn-primary" (click)="addOrUpdateContent()">Update</button>
+                                    <button style="margin-left: 26%;" class="btn btn-primary" (click)="addOrUpdateContents()">Update</button>
                                 </span>
                                 &nbsp;&nbsp;
                                 <button type="button" id="CloseButton" class="btn btn-secondary" (click)="addOrUpdateContent.hide();backupData()">Close</button>
@@ -197,7 +194,6 @@
         </div>
     </div>
 </div>
-
 
 <div bsModal #contentDelete="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
     aria-hidden="true">
@@ -221,7 +217,7 @@
                             <th>Short Description</th>
                             <th>Image</th>
                             <th>Amount</th>
-                          </tr>
+                        </tr>
                     </thead>
                     <tbody>
                         <tr *ngIf="deleteRecord">

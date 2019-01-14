@@ -1,4 +1,4 @@
-import { Component,ChangeDetectorRef, OnInit } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ContentService } from '../../services/content.service';
 declare var $: any;
@@ -49,15 +49,14 @@ export class ContentComponent implements OnInit {
   isShowOriginalImg: boolean = false;
   deleteRecord: '';
   currentPage: any = 1;
-  totalItems: number;
   userimagePreview: any;
   userImage: string;
 
-  constructor(private spinner: NgxSpinnerService, private service: ContentService, private cdr: ChangeDetectorRef, private toastyService: ToastyService, private formBuilder: FormBuilder) { 
+  constructor(private spinner: NgxSpinnerService, private service: ContentService, private cdr: ChangeDetectorRef, private toastyService: ToastyService, private formBuilder: FormBuilder) {
     this.contentForm = this.formBuilder.group({
       Name: ['', Validators.required],
       lonDes: ['', Validators.required],
-      shortDes: ['', Validators.required],     
+      shortDes: ['', Validators.required],
       Price: ['', Validators.required]
     });
   }
@@ -67,8 +66,9 @@ export class ContentComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.spinner.show();
     this.service.listContentDetails().subscribe(response => {
-
+      this.spinner.hide();
       if (response.json().status == true) {
         this.ContentData = response.json().result;
       } else {
@@ -90,7 +90,7 @@ export class ContentComponent implements OnInit {
 
   get f() { return this.contentForm.controls; }
 
-  addOrUpdateContent() {
+  addOrUpdateContents() {
     this.submitted = true;
     if (this.contentForm.invalid) {
       return;
@@ -108,10 +108,10 @@ export class ContentComponent implements OnInit {
       content_full_desc: this.content.content_full_desc,
       content_short_desc: this.content.content_short_desc,
       content_price: this.content.content_price,
+      profile_name: this.content.profile_name,
       content_image: this.content.content_image,
       content_status: this.content.content_status
     }
-    console.log(data);
     let modelClose = document.getElementById("CloseButton");
     this.service.saveContentDetails(data).subscribe(res => {
       modelClose.click();
@@ -120,7 +120,6 @@ export class ContentComponent implements OnInit {
           this.ContentData.push(res.json().result)
         } else {
           let _index = ((this.currentPage - 1) * 3) + this.content["index"]
-          console.log(_index)
           if (this.content.content_status == '0') {
             this.ContentData.splice(_index, 1);
           } else {
@@ -137,26 +136,31 @@ export class ContentComponent implements OnInit {
 
   editContent(data, index) {
     this.copiedRow = Object.assign({}, data);
-    console.log("*************")
-    console.log(data)
-    console.log(index)
     this.content = data;
     this.content["index"] = index;
   }
 
 
   backupData() {
-    console.log('@@@@')
-    console.log(this.currentPage)
-    console.log(this.content["index"])
     let _index = ((this.currentPage - 1) * 3) + this.content["index"]
-    console.log(_index);
     this.ContentData[_index] = this.copiedRow;
   }
 
   deleteContent(data, index) {
     this.deleteRecord = data;
     this.deleteRecord["index"] = index
+  }
+
+  deleteAlert() {
+    this.service.saveContentDetails({ content_id: this.deleteRecord["content_id"], content_status: 0 }).subscribe(res => {
+      if (res.json().status == true) {
+        let _index = ((this.currentPage - 1) * 3) + this.deleteRecord["index"]
+        this.ContentData.splice(_index, 1);
+        this.toastyService.success(this.toastOptionsSuccess);
+      } else {
+        this.toastyService.error(this.toastOptionsError);
+      }
+    });
   }
 
   getFileDetails(event) {
@@ -184,4 +188,5 @@ export class ContentComponent implements OnInit {
       this.isShowOriginalImg = true;
     }
   }
+
 }

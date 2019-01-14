@@ -107,7 +107,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="select1">Type<b style="color:red">*</b></label>
                                     <div class="col-md-9">
-                                        <select id="select1" name="select1" class="form-control" formControlName="Type"
+                                        <select id="select1" name="select1" class="form-control" formControlName="Type" (ngModelChange)="getDealType()"
                                             [(ngModel)]="deals.deal_type" [ngClass]="{ 'is-invalid': submitted && f.Type.errors }">
                                             <option *ngFor="let data1 of this.dealAdd" [ngValue]="data1.content_cat_id">{{data1.content_cat_name}}</option>
                                         </select>
@@ -141,7 +141,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="text-input"></label>
                                     <div class="col-md-9">
-                                        <input type="file" name="photo" accept="image/*" (change)="getFileDetails($event,'p')" />
+                                        <input type="file" name="photo" accept="image/*" (change)="getFileDetails($event)" />
                                     </div>
                                 </div>
                                 <!-- 

@@ -65,23 +65,31 @@ export class DealsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.spinner.show();
     this.service.listDealDetails().subscribe(response => {
+      this.spinner.hide();
       if (response.json().status == true) {
         this.dealsData = response.json().result;
-        console.log(this.dealsData)
       } else {
         this.dealsData = [];
       }
     });
-    this.http.get(environment.host + 'content-categorys').subscribe(data => {
-      console.log(data.json())
-      this.dealAdd = data.json().result;
-    });
+
 
     this.dealsForm = this.formBuilder.group({
       Name: ['', Validators.required],
       shortDescription: ['', Validators.required],
       Type: ['', Validators.required]
+    });
+  }
+
+  getDealType() {
+    this.http.get(environment.host + 'content-categorys').subscribe(res => {
+      if (res.json().status == true) {
+        this.dealAdd = res.json().result;
+      } else {
+        this.dealAdd = [];
+      }
     });
   }
   removeFields() {
@@ -144,7 +152,6 @@ export class DealsComponent implements OnInit {
       deal_image: this.deals.deal_image,
       deal_status: this.deals.deal_status
     }
-    console.log(data);
     let modelClose = document.getElementById("CloseButton");
     this.service.saveDealDetails(data).subscribe(res => {
       modelClose.click();
@@ -153,7 +160,6 @@ export class DealsComponent implements OnInit {
           this.dealsData.push(res.json().result)
         } else {
           let _index = ((this.currentPage - 1) * 3) + this.deals["index"]
-          console.log(_index)
           if (this.deals.deal_status == '0') {
             this.dealsData.splice(_index, 1);
           } else {
@@ -170,15 +176,12 @@ export class DealsComponent implements OnInit {
   editDeal(data, index) {
     this.copiedRow = Object.assign({}, data);
     this.deals = data;
-    console.log(this.deals)
     this.deals["index"] = index;
   }
 
 
   backupData() {
-    console.log('@@@@')
     let _index = ((this.currentPage - 1) * 3) + this.deals["index"]
-    console.log(_index);
     this.dealsData[_index] = this.copiedRow;
   }
 
