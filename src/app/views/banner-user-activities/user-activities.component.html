@@ -58,7 +58,7 @@
                                 <tr *ngFor="let userActivity of userActivitysData | paginate: { itemsPerPage: 3, currentPage: currentPage };let i=index;">
                                     <td>{{userActivity.fname +" "+userActivity.lname}}</td>
                                     <td>{{userActivity.activity_name}}</td>
-                                    <td>{{userActivity.user_activity_startedon}}</td>
+                                    <td>{{userActivity.user_activity_startedon | date:'mediumDate'}}</td>
                                     <td>{{userActivity.user_activity_start_time}}</td>
                                     <td>{{userActivity.user_activity_end_time}}</td>
                                     <td>{{userActivity.user_activity_type}}</td>
