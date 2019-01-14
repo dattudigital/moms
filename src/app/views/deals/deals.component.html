@@ -30,8 +30,6 @@
                                 <th>Description</th>
                                 <th>Short Description</th>
                                 <th>Image</th>
-                                <!-- <th>Active From</th>
-                                <th>Active To</th> -->
                                 <th>Edit</th>
                                 <th>Delete</th>
                             </tr>
@@ -43,8 +41,6 @@
                                 <td>{{list.deal_long_desc}}</td>
                                 <td>{{list.deal_short_desc}}</td>
                                 <td> <img [src]="list.deal_image" height="50"></td>
-                                <!-- <td>{{list.deal_active_from | date:'medium'}}</td>
-                                <td>{{list.deal_active_to | date:'medium'}}</td> -->
                                 <td> <button class="btn-primary" data-toggle="modal" (click)="addOrUpdateDeals.show();editDeal(list,i)"><i
                                             class="fa fa-edit"></i></button></td>
                                 <td> <button class="btn-danger" data-toggle="modal" (click)="dangerModal.show();deleteDeal(list,i)"><i
@@ -103,12 +99,11 @@
                                             [ngModelOptions]="{standalone: true}"></textarea>
                                     </div>
                                 </div>
-
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="select1">Type<b style="color:red">*</b></label>
                                     <div class="col-md-9">
-                                        <select id="select1" name="select1" class="form-control" formControlName="Type" (ngModelChange)="getDealType()"
-                                            [(ngModel)]="deals.deal_type" [ngClass]="{ 'is-invalid': submitted && f.Type.errors }">
+                                        <select id="select1" name="select1" class="form-control" formControlName="Type"
+                                            [(ngModel)]="deals.deal_type" (ngModelChange)="getDealsType()" [ngClass]="{ 'is-invalid': submitted && f.Type.errors }">
                                             <option *ngFor="let data1 of this.dealAdd" [ngValue]="data1.content_cat_id">{{data1.content_cat_name}}</option>
                                         </select>
                                         <div *ngIf="submitted && f.Type.errors" class="invalid-feedback">
@@ -144,32 +139,6 @@
                                         <input type="file" name="photo" accept="image/*" (change)="getFileDetails($event)" />
                                     </div>
                                 </div>
-                                <!-- 
-                                <div class="form-group row">
-                                    <label class="col-md-3 col-form-label" for="text-input">Active From<b style="color:red">*</b></label>
-                                    <div class="col-md-9">
-                                        <input type="datetime-local" maxlength="10" formControlName="StartDate" class="form-control"
-                                            placeholder="Activity StartDate" [(ngModel)]="deals.deal_active_from | date:'yyyy-MM-ddTHH:mm'"
-                                            [ngClass]="{ 'is-invalid': submitted && f.StartDate.errors }">
-                                        <div *ngIf="submitted && f.StartDate.errors" class="invalid-feedback">
-                                            <div *ngIf="f.StartDate.errors.required" style="color:red">Active From is
-                                                required</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 col-form-label" for="text-input">Active To<b style="color:red">*</b></label>
-                                    <div class="col-md-9">
-                                        <input type="datetime-local" maxlength="10" formControlName="EndDate" class="form-control"
-                                            placeholder="Activity EndDate" [(ngModel)]="deals.deal_active_to | date:'yyyy-MM-ddTHH:mm'" [ngClass]="{ 'is-invalid': submitted && f.EndDate.errors }">
-                                        <div *ngIf="submitted && f.EndDate.errors" class="invalid-feedback">
-                                            <div *ngIf="f.EndDate.errors.required" style="color:red">Active To is
-                                                required</div>
-                                        </div>
-                                    </div>
-                                </div> -->
-
                                 <div *ngIf="deals.deal_id">
                                     <div class="form-group row">
                                         <label class="col-md-3 col-form-label" for="text-input">Status</label>
@@ -199,7 +168,6 @@
     </div>
 </div>
 
-
 <div bsModal #dangerModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-danger" role="document">
@@ -222,8 +190,6 @@
                             <th>Short Description</th>
                             <th>Description</th>
                             <th>Image</th>
-                            <!-- <th>Active From</th>
-                            <th>Active To</th> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -233,8 +199,6 @@
                             <td>{{deleteRecord.deal_long_desc}}</td>
                             <td>{{deleteRecord.deal_long_desc}}</td>
                             <td><img [src]="deleteRecord.deal_image" height="50"> </td>
-                            <!-- <td>{{deleteRecord.deal_active_from | date:'medium'}}</td>
-                            <td>{{deleteRecord.deal_active_to | date:'medium'}}</td> -->
                         </tr>
                     </tbody>
                 </table>

@@ -180,6 +180,7 @@ export class ContentComponent implements OnInit {
       }
     }
   }
+  
   _handleReaderLoaded(readerEvt) {
     var binaryString = readerEvt.target.result;
     this.content.content_image = btoa(binaryString);

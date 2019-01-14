@@ -6,7 +6,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastyService, ToastOptions } from 'ng2-toasty';
 import { environment } from '../../../environments/environment'
 import { Http } from '@angular/http';
-import * as moment from 'moment';
+import { CompeleteMomsService } from '../../services/compelete-moms.service';
 
 @Component({
   selector: 'app-deals',
@@ -58,7 +58,7 @@ export class DealsComponent implements OnInit {
   userimagePreview: any;
   userImage: string;
 
-  constructor(private spinner: NgxSpinnerService, private http: Http, private service: DealsService, private cdr: ChangeDetectorRef, private toastyService: ToastyService, private formBuilder: FormBuilder) { }
+  constructor(private spinner: NgxSpinnerService, private http: Http, private service: DealsService, private cdr: ChangeDetectorRef, private toastyService: ToastyService, private formBuilder: FormBuilder, private completeservice: CompeleteMomsService) { }
 
   ngAfterViewChecked() {
     this.cdr.detectChanges();
@@ -67,14 +67,13 @@ export class DealsComponent implements OnInit {
   ngOnInit() {
     this.spinner.show();
     this.service.listDealDetails().subscribe(response => {
-      this.spinner.hide();
       if (response.json().status == true) {
+        this.spinner.hide();
         this.dealsData = response.json().result;
       } else {
         this.dealsData = [];
       }
     });
-
 
     this.dealsForm = this.formBuilder.group({
       Name: ['', Validators.required],
@@ -83,15 +82,6 @@ export class DealsComponent implements OnInit {
     });
   }
 
-  getDealType() {
-    this.http.get(environment.host + 'content-categorys').subscribe(res => {
-      if (res.json().status == true) {
-        this.dealAdd = res.json().result;
-      } else {
-        this.dealAdd = [];
-      }
-    });
-  }
   removeFields() {
     this.deals.deal_id = '';
     this.deals.deal_name = '';
@@ -100,6 +90,24 @@ export class DealsComponent implements OnInit {
     this.deals.deal_type = '';
     this.deals.deal_image = '';
     this.deals.deal_status = '';
+  }
+
+  getDealsType() {
+    let _dealtype = this.completeservice.getDealType();
+    if (Object.keys(_dealtype).length) {
+      this.dealAdd = _dealtype
+    } else {
+      this.spinner.show();
+      this.http.get(environment.host + 'content-categorys').subscribe(response => {
+        this.spinner.hide();
+        if (response.json().status == true) {
+          this.dealAdd = response.json().result;
+          this.completeservice.addDealType(response.json().result)
+        } else {
+          this.dealsData = [];
+        }
+      });
+    }
   }
 
   getFileDetails(event) {
@@ -119,6 +127,7 @@ export class DealsComponent implements OnInit {
       }
     }
   }
+
   _handleReaderLoaded(readerEvt) {
     var binaryString = readerEvt.target.result;
     this.deals.deal_image = btoa(binaryString);
@@ -179,7 +188,6 @@ export class DealsComponent implements OnInit {
     this.deals["index"] = index;
   }
 
-
   backupData() {
     let _index = ((this.currentPage - 1) * 3) + this.deals["index"]
     this.dealsData[_index] = this.copiedRow;
@@ -191,9 +199,7 @@ export class DealsComponent implements OnInit {
   }
 
   deleteAlert() {
-
     this.service.saveDealDetails({ deal_id: this.deleteRecord["deal_id"], deal_status: 0 }).subscribe(res => {
-
       if (res.json().status == true) {
         let _index = ((this.currentPage - 1) * 3) + this.deleteRecord["index"]
         this.dealsData.splice(_index, 1);
