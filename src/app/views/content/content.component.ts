@@ -4,6 +4,8 @@ import { ContentService } from '../../services/content.service';
 declare var $: any;
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastyService, ToastOptions } from 'ng2-toasty';
+import { CompeleteMomsService } from '../../services/compelete-moms.service';
+
 @Component({
   selector: 'app-content',
   templateUrl: './content.component.html'
@@ -52,7 +54,7 @@ export class ContentComponent implements OnInit {
   userimagePreview: any;
   userImage: string;
 
-  constructor(private spinner: NgxSpinnerService, private service: ContentService, private cdr: ChangeDetectorRef, private toastyService: ToastyService, private formBuilder: FormBuilder) {
+  constructor(private spinner: NgxSpinnerService, private completeservice: CompeleteMomsService, private service: ContentService, private cdr: ChangeDetectorRef, private toastyService: ToastyService, private formBuilder: FormBuilder) {
     this.contentForm = this.formBuilder.group({
       Name: ['', Validators.required],
       lonDes: ['', Validators.required],
@@ -66,15 +68,21 @@ export class ContentComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.spinner.show();
-    this.service.listContentDetails().subscribe(response => {
-      this.spinner.hide();
-      if (response.json().status == true) {
-        this.ContentData = response.json().result;
-      } else {
-        this.ContentData = [];
-      }
-    });
+    let _content = this.completeservice.getContentData();
+    if (Object.keys(_content).length) {
+      this.ContentData = _content
+    } else {
+      this.spinner.show();
+      this.service.listContentDetails().subscribe(response => {
+        this.spinner.hide();
+        if (response.json().status == true) {
+          this.ContentData = response.json().result;
+          this.completeservice.addContentData(response.json().result)
+        } else {
+          this.ContentData = [];
+        }
+      });
+    }
   }
 
   removeFields() {
@@ -180,7 +188,7 @@ export class ContentComponent implements OnInit {
       }
     }
   }
-  
+
   _handleReaderLoaded(readerEvt) {
     var binaryString = readerEvt.target.result;
     this.content.content_image = btoa(binaryString);

@@ -47,7 +47,7 @@ export class DealsComponent implements OnInit {
 
   }
   dealsForm: FormGroup;
-  dealAdd: any = [];
+  dealTypeData: any = [];
   submitted = false;
   dealsData: any;
   copiedRow = '';
@@ -65,15 +65,21 @@ export class DealsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.spinner.show();
-    this.service.listDealDetails().subscribe(response => {
-      if (response.json().status == true) {
-        this.spinner.hide();
-        this.dealsData = response.json().result;
-      } else {
-        this.dealsData = [];
-      }
-    });
+    let _deals = this.completeservice.getDealsData();
+    if (Object.keys(_deals).length) {
+      this.dealsData = _deals
+    } else {
+      this.spinner.show();
+      this.service.listDealDetails().subscribe(response => {
+        if (response.json().status == true) {
+          this.spinner.hide();
+          this.dealsData = response.json().result;
+          this.completeservice.addDealsData(response.json().result)
+        } else {
+          this.dealsData = [];
+        }
+      });
+    }
 
     this.dealsForm = this.formBuilder.group({
       Name: ['', Validators.required],
@@ -95,13 +101,13 @@ export class DealsComponent implements OnInit {
   getDealsType() {
     let _dealtype = this.completeservice.getDealType();
     if (Object.keys(_dealtype).length) {
-      this.dealAdd = _dealtype
+      this.dealTypeData = _dealtype
     } else {
       this.spinner.show();
       this.http.get(environment.host + 'content-categorys').subscribe(response => {
         this.spinner.hide();
         if (response.json().status == true) {
-          this.dealAdd = response.json().result;
+          this.dealTypeData = response.json().result;
           this.completeservice.addDealType(response.json().result)
         } else {
           this.dealsData = [];
