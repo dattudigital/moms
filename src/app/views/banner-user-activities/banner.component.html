@@ -29,6 +29,7 @@
                                 <th>Description</th>
                                 <th>Promotion For</th>
                                 <th>Image</th>
+                                <th>Position</th>
                                 <th>Edit</th>
                                 <th>Delete</th>
                             </tr>
@@ -39,6 +40,7 @@
                                 <td>{{banner.promotion_description}}</td>
                                 <td>{{banner.promotion_for}}</td>
                                 <td> <img [src]="banner.promotion_img" height="50"></td>
+                                <td>{{banner.promotion_type}}</td>
                                 <td> <button class="btn-primary" data-toggle="modal" (click)="addOrUpdateBanner.show();editBanner(banner,i)"><i
                                             class="fa fa-edit"></i></button></td>
                                 <td> <button class="btn-danger" data-toggle="modal" (click)="dangerModal.show();deleteBanner(banner,i)"><i
