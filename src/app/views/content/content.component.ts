@@ -53,14 +53,9 @@ export class ContentComponent implements OnInit {
   currentPage: any = 1;
   userimagePreview: any;
   userImage: string;
+  completeData: any = [];
 
   constructor(private spinner: NgxSpinnerService, private completeservice: CompeleteMomsService, private service: ContentService, private cdr: ChangeDetectorRef, private toastyService: ToastyService, private formBuilder: FormBuilder) {
-    this.contentForm = this.formBuilder.group({
-      Name: ['', Validators.required],
-      lonDes: ['', Validators.required],
-      shortDes: ['', Validators.required],
-      Price: ['', Validators.required]
-    });
   }
 
   ngAfterViewChecked() {
@@ -83,6 +78,13 @@ export class ContentComponent implements OnInit {
         }
       });
     }
+
+    this.contentForm = this.formBuilder.group({
+      Name: ['', Validators.required],
+      lonDes: ['', Validators.required],
+      shortDes: ['', Validators.required],
+      Price: ['', Validators.required]
+    });
   }
 
   removeFields() {
@@ -126,12 +128,15 @@ export class ContentComponent implements OnInit {
       if (res.json().status == true) {
         if (!this.content.content_id) {
           this.ContentData.push(res.json().result)
+          this.completeservice.addContentData(res.json().result)
         } else {
           let _index = ((this.currentPage - 1) * 3) + this.content["index"]
           if (this.content.content_status == '0') {
             this.ContentData.splice(_index, 1);
+            this.completeservice.addContentData(this.completeData)
           } else {
             this.ContentData[_index] = res.json().result;
+            this.completeservice.addContentData(res.json().result)
           }
         }
         this.toastyService.success(this.toastOptionsSuccess);
@@ -140,7 +145,6 @@ export class ContentComponent implements OnInit {
       }
     })
   }
-
 
   editContent(data, index) {
     this.copiedRow = Object.assign({}, data);
@@ -164,6 +168,7 @@ export class ContentComponent implements OnInit {
       if (res.json().status == true) {
         let _index = ((this.currentPage - 1) * 3) + this.deleteRecord["index"]
         this.ContentData.splice(_index, 1);
+        this.completeservice.addContentData(this.completeData)
         this.toastyService.success(this.toastOptionsSuccess);
       } else {
         this.toastyService.error(this.toastOptionsError);

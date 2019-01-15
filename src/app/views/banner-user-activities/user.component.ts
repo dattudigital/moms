@@ -62,11 +62,13 @@ export class UserComponent implements OnInit {
         this.deleteRecord["index"] = index
     }
 
-    deleteAlert() {
+    deleteUserData() {
+        let _userData: any =[]
         this.service.saveUser({ user_id: this.deleteRecord["user_id"], status: 0 }).subscribe(res => {
             if (res.json().status == true) {
                 let _index = ((this.currentPage - 1) * 3) + this.deleteRecord["index"]
                 this.usersData.splice(_index, 1);
+                this.completeservice.addUserData(_userData)
                 this.toastyService.success(this.toastOptionsSuccess);
             } else {
                 this.toastyService.error(this.toastOptionsError);

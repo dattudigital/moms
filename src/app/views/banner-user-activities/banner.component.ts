@@ -4,6 +4,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastyService, ToastOptions } from 'ng2-toasty';
 import { BannersService } from '../../services/banners.service';
+import { CompeleteMomsService } from '../../services/compelete-moms.service';
 
 @Component({
     templateUrl: 'banner.component.html'
@@ -33,7 +34,7 @@ export class BannerComponent implements OnInit {
     };
 
 
-    banners: any = [];
+    bannersData: any = [];
     bannerForm: FormGroup;
     dealAdd: any = [];
     submitted = false;
@@ -45,30 +46,39 @@ export class BannerComponent implements OnInit {
     totalItems: number;
     userimagePreview: any;
     userImage: string;
+    completeData: any = [];
 
     banner: any = {
         'promotion_id': null,
         'promotion_name': '',
         'promotion_type': '',
         'promotion_img': '',
+        'promotion_img_name':'',
         'promotion_description': '',
         'promotion_for': '',
         'rec_status': ''
     }
 
-    constructor(private service: BannersService, private toastyService: ToastyService, private formBuilder: FormBuilder, private cdr: ChangeDetectorRef) {
+    constructor(private service: BannersService, private completeservice: CompeleteMomsService, private spinner: NgxSpinnerService, private toastyService: ToastyService, private formBuilder: FormBuilder, private cdr: ChangeDetectorRef) {
 
     }
     ngAfterViewChecked() {
         this.cdr.detectChanges();
-      }
+    }
 
     ngOnInit() {
-        this.service.listBanners().subscribe(res => {
-            if (res.json().status == true) {
-                this.banners = res.json().result;
-            }
-        })
+        let _banner = this.completeservice.getBanners();
+        if (Object.keys(_banner).length) {
+            this.bannersData = _banner
+        } else {
+            this.service.listBanners().subscribe(res => {
+                if (res.json().status == true) {
+                    this.bannersData = res.json().result;
+                    this.completeservice.addBanners(res.json().result)
+                }
+            })
+        }
+
         this.bannerForm = this.formBuilder.group({
             Name: ['', Validators.required],
             for: ['', Validators.required],
@@ -96,6 +106,7 @@ export class BannerComponent implements OnInit {
             promotion_name: this.banner.promotion_name,
             promotion_type: this.banner.promotion_type,
             promotion_img: this.banner.promotion_img,
+            promotion_img_name:this.banner.promotion_img_name,
             promotion_description: this.banner.promotion_description,
             promotion_for: this.banner.promotion_for,
             rec_status: this.banner.rec_status
@@ -105,15 +116,18 @@ export class BannerComponent implements OnInit {
         this.service.saveBanners(data).subscribe(res => {
             modelClose.click();
             if (res.json().status == true) {
-                if (!this.banner.deal_id) {
-                    this.banners.push(res.json().result)
+                if (!this.banner.promotion_id) {
+                    this.bannersData.push(res.json().result)
+                    this.completeservice.addBanners(res.json().result)
                 } else {
                     let _index = ((this.currentPage - 1) * 3) + this.banner["index"]
                     console.log(_index)
                     if (this.banner.rec_status == '0') {
-                        this.banners.splice(_index, 1);
+                        this.bannersData.splice(_index, 1);
+                        this.completeservice.addContentData(this.completeData)
                     } else {
-                        this.banners[_index] = res.json().result;
+                        this.bannersData[_index] = res.json().result;
+                        this.completeservice.addBanners(res.json().result)
                     }
                 }
                 this.toastyService.success(this.toastOptionsSuccess);
@@ -134,7 +148,7 @@ export class BannerComponent implements OnInit {
         if (event.target.files && event.target.files[0]) {
             var reader = new FileReader();
             reader.readAsDataURL(event.target.files[0]);
-            this.banner.promotion_img = file.name;
+            this.banner.promotion_img_name = file.name;
             reader.onload = (event) => {
                 this.userimagePreview = event.target;
             }
@@ -151,6 +165,7 @@ export class BannerComponent implements OnInit {
     }
 
     editBanner(data, index) {
+        console.log(data);
         this.copiedRow = Object.assign({}, data);
         this.banner = data;
         console.log(this.banner)
@@ -161,7 +176,7 @@ export class BannerComponent implements OnInit {
         console.log('@@@@')
         let _index = ((this.currentPage - 1) * 3) + this.banner["index"]
         console.log(_index);
-        this.banners[_index] = this.copiedRow;
+        this.bannersData[_index] = this.copiedRow;
     }
 
     deleteBanner(data, index) {
@@ -170,6 +185,20 @@ export class BannerComponent implements OnInit {
         console.log(this.deleteRecord)
     }
 
+    deleteBannerData() {
+        this.service.saveBanners({ promotion_id: this.deleteRecord["promotion_id"], rec_status: 0 }).subscribe(res => {
+            console.log(res.json());
+            if (res.json().status == true) {
+                console.log('888')
+                let _index = ((this.currentPage - 1) * 3) + this.deleteRecord["index"]
+                this.bannerData.splice(_index, 1);
+                this.completeservice.addBanners(this.completeData)
+                this.toastyService.success(this.toastOptionsSuccess);
+            } else {
+                this.toastyService.error(this.toastOptionsError);
+            }
+        });
+    }
     removeFields() {
         this.banner.promotion_id = '';
         this.banner.promotion_name = '';

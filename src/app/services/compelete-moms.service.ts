@@ -13,6 +13,7 @@ export class CompeleteMomsService {
   userActivitysData: any = [];
   activitys: any = [];
   users: any = [];
+  bannersData:any=[];
 
   public addDealType(dealType) {
     this.dealTypeData = dealType
@@ -55,10 +56,12 @@ export class CompeleteMomsService {
   }
 
   public addActivityData(activity) {
+    console.log('add activity')
     this.activitys = activity
   }
 
   public getActivityData() {
+    console.log('get activity')
     return this.activitys
   }
 
@@ -68,5 +71,13 @@ export class CompeleteMomsService {
 
   public getUsers() {
     return this.users;
+  }
+
+  public addBanners(banner){
+    this.bannersData =banner;
+  }
+
+  public getBanners(){
+    return this.bannersData;
   }
 }

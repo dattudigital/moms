@@ -5,7 +5,7 @@ declare var $: any;
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastyService, ToastOptions } from 'ng2-toasty';
 import { Http } from '@angular/http';
-import { environment } from '../../../environments/environment'
+import { CompeleteMomsService } from '../../services/compelete-moms.service';
 
 @Component({
   templateUrl: 'activities.component.html',
@@ -34,7 +34,7 @@ export class ActivitiesComponent implements OnInit {
     theme: 'default'
   };
 
-  userActivity: any;
+  activitys: any;
   copiedRow: any;
   activityForm: FormGroup;
   activities: any = {
@@ -47,8 +47,11 @@ export class ActivitiesComponent implements OnInit {
   submitted = false;
   cols: any = [];
   deleteRecord = '';
+  completeData: any = [];
+  currentPage: any = 1;
 
-  constructor(private http: Http, private activityService: UserActivitiesService, private spinner: NgxSpinnerService, private toastyService: ToastyService, private cdr: ChangeDetectorRef, private formBuilder: FormBuilder) { }
+
+  constructor(private http: Http, private completeservice: CompeleteMomsService, private activityService: UserActivitiesService, private spinner: NgxSpinnerService, private toastyService: ToastyService, private cdr: ChangeDetectorRef, private formBuilder: FormBuilder) { }
 
   ngAfterViewChecked() {
     //your code to update the model
@@ -57,20 +60,18 @@ export class ActivitiesComponent implements OnInit {
 
   ngOnInit() {
 
-    this.activityService.getActivity().subscribe(response => {
-      if (response.json().status == true) {
-        this.userActivity = response.json().result;
-        console.log(this.userActivity)
-      } else {
-        this.userActivity = [];
-      }
-    });
+    let _activity = this.completeservice.getActivityData();
+    if (Object.keys(_activity).length) {
+      this.activitys = _activity
+    } else {
+      this.activityService.getActivity().subscribe(res => {
+        if (res.json().status == true) {
+          this.activitys = res.json().result;
+          this.completeservice.addActivityData(res.json().result)
+        }
+      });
+    }
 
-    this.cols = [
-      { field: 'activity_name', header: 'Name' },
-      { field: 'activity_type', header: 'Type' },
-      { field: 'activity_desc', header: 'Description' },
-    ]
     this.activityForm = this.formBuilder.group({
       Name: ['', Validators.required],
       Type: ['', Validators.required],
@@ -78,7 +79,6 @@ export class ActivitiesComponent implements OnInit {
 
     });
   }
-
 
   removeFields() {
     this.submitted = false;
@@ -113,12 +113,16 @@ export class ActivitiesComponent implements OnInit {
       modelClose.click();
       if (res.json().status == true) {
         if (!this.activities.activity_id) {
-          this.userActivity.push(res.json().result)
+          this.activitys.push(res.json().result)
+          this.completeservice.addActivityData(res.json().result)
         } else {
+          let _index = ((this.currentPage - 1) * 3) + this.activities["index"]
           if (this.activities.activity_status == '0') {
-            this.userActivity.splice(this.activities["index"], 1);
+            this.activitys.splice(_index, 1);
+            this.completeservice.addActivityData(this.completeData)
           } else {
-            this.userActivity[this.activities["index"]] = res.json().result;
+            this.activitys[_index] = res.json().result;
+            this.completeservice.addActivityData(res.json().result)
           }
         }
         this.toastyService.success(this.toastOptionsSuccess);
@@ -135,26 +139,26 @@ export class ActivitiesComponent implements OnInit {
   }
 
   backupData() {
-    let _index = this.activities["index"];
-    this.userActivity[_index] = this.copiedRow;
+    let _index = ((this.currentPage - 1) * 3) + this.activities["index"]
+    this.activitys[_index] = this.copiedRow;
   }
 
-  deleteUserActivity(val, index) {
-    console.log(val)
+  deleteUserActivities(val, index) {
     this.deleteRecord = val;
     this.deleteRecord["index"] = index
   }
 
-  deleteAlert() {
+  deleteActivities() {
     this.activityService.saveActivitiesDetails({ activity_id: this.deleteRecord["activity_id"], activity_status: 0 }).subscribe(res => {
       if (res.json().status == true) {
-        this.userActivity.splice(this.deleteRecord["index"], 1);
+        let _index = ((this.currentPage - 1) * 3) + this.deleteRecord["index"]
+        this.activitys.splice(_index, 1);
+        this.completeservice.addActivityData(this.completeData)
         this.toastyService.success(this.toastOptionsSuccess);
       } else {
         this.toastyService.error(this.toastOptionsError);
       }
     });
   }
-
 
 }

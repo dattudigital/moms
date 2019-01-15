@@ -57,6 +57,7 @@ export class DealsComponent implements OnInit {
   totalItems: number;
   userimagePreview: any;
   userImage: string;
+  completeData: any = [];
 
   constructor(private spinner: NgxSpinnerService, private http: Http, private service: DealsService, private cdr: ChangeDetectorRef, private toastyService: ToastyService, private formBuilder: FormBuilder, private completeservice: CompeleteMomsService) { }
 
@@ -173,12 +174,15 @@ export class DealsComponent implements OnInit {
       if (res.json().status == true) {
         if (!this.deals.deal_id) {
           this.dealsData.push(res.json().result)
+          this.completeservice.addDealsData(res.json().result)
         } else {
           let _index = ((this.currentPage - 1) * 3) + this.deals["index"]
           if (this.deals.deal_status == '0') {
             this.dealsData.splice(_index, 1);
+            this.completeservice.addDealsData(this.completeData)
           } else {
             this.dealsData[_index] = res.json().result;
+            this.completeservice.addDealsData(res.json().result)
           }
         }
         this.toastyService.success(this.toastOptionsSuccess);
@@ -209,6 +213,7 @@ export class DealsComponent implements OnInit {
       if (res.json().status == true) {
         let _index = ((this.currentPage - 1) * 3) + this.deleteRecord["index"]
         this.dealsData.splice(_index, 1);
+        this.completeservice.addDealsData(this.completeData)
         this.toastyService.success(this.toastOptionsSuccess);
       } else {
         this.toastyService.error(this.toastOptionsError);

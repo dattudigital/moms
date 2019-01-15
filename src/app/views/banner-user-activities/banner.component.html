@@ -34,7 +34,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let banner of banners | paginate: { itemsPerPage: 3, currentPage: currentPage };let i=index;">
+                            <tr *ngFor="let banner of bannersData | paginate: { itemsPerPage: 3, currentPage: currentPage };let i=index;">
                                 <td>{{banner.promotion_name}}</td>
                                 <td>{{banner.promotion_description}}</td>
                                 <td>{{banner.promotion_for}}</td>
@@ -53,7 +53,7 @@
     </div>
 </div>
 
- 
+
 <div bsModal #addOrUpdateBanner="bs-modal" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -82,20 +82,22 @@
                                     <label class="col-md-3 col-form-label" for="text-input">Description <b style="color:red">*</b></label>
                                     <div class="col-md-9">
                                         <input type="text" maxlength="50" formControlName="desc" class="form-control"
-                                            placeholder=" Description" [(ngModel)]="banner.promotion_description" [ngClass]="{ 'is-invalid': submitted && f.desc.errors }" />
+                                            placeholder=" Description" [(ngModel)]="banner.promotion_description"
+                                            [ngClass]="{ 'is-invalid': submitted && f.desc.errors }" />
                                         <div *ngIf="submitted && f.desc.errors" class="invalid-feedback">
                                             <div *ngIf="f.desc.errors.required" style="color:red">Short
                                                 Description is required</div>
                                         </div>
                                     </div>
-                                </div>                        
+                                </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="select1">Promotion For<b style="color:red">*</b></label>
                                     <div class="col-md-9">
                                         <input type="text" maxlength="50" formControlName="for" class="form-control"
-                                            placeholder="Promotion For" [(ngModel)]="banner.promotion_name" [ngClass]="{ 'is-invalid': submitted && f.for.errors }" />
+                                            placeholder="Promotion For" [(ngModel)]="banner.promotion_for" [ngClass]="{ 'is-invalid': submitted && f.for.errors }" />
                                         <div *ngIf="submitted && f.for.errors" class="invalid-feedback">
-                                            <div *ngIf="f.for.errors.required" style="color:red">Promotion For is required</div>
+                                            <div *ngIf="f.for.errors.required" style="color:red">Promotion For is
+                                                required</div>
                                         </div>
                                     </div>
                                 </div>
@@ -103,7 +105,7 @@
                                     <label class="col-md-3 col-form-label" for="select1">Position<b style="color:red">*</b></label>
                                     <div class="col-md-9">
                                         <input type="text" maxlength="50" name="position" class="form-control"
-                                            placeholder="Name" [(ngModel)]="banner.promotion_type" [ngModelOptions]="{standalone: true}"  />                                     
+                                            placeholder="Name" [(ngModel)]="banner.promotion_type" [ngModelOptions]="{standalone: true}" />
                                     </div>
                                 </div>
                                 <div class="form-group row" *ngIf="!banner.promotion_id">
@@ -113,11 +115,10 @@
                                     </div>
                                 </div>
                                 <div *ngIf="banner.promotion_id">
-                                    test{{isShowOriginalImg}}
                                     <div class="form-group row" *ngIf="!isShowOriginalImg">
                                         <label class="col-md-3 col-form-label" for="text-input">Image first</label>
                                         <div class="col-md-9">
-                                            <img [src]="banner.deal_image" height="50">
+                                            <img [src]="banner.promotion_img" height="50">
                                         </div>
                                     </div>
                                     <div class="form-group row" *ngIf="isShowOriginalImg">
@@ -132,12 +133,12 @@
                                     <div class="col-md-9">
                                         <input type="file" name="photo" accept="image/*" (change)="getFileDetails($event,'p')" />
                                     </div>
-                                </div>                
+                                </div>
                                 <div *ngIf="banner.promotion_id">
                                     <div class="form-group row">
                                         <label class="col-md-3 col-form-label" for="text-input">Status</label>
-                                        <div class="col-md-8">
-                                            <select class="form-control" name="vehicletype1" [(ngModel)]="banner.deal_status"
+                                        <div class="col-md-9">
+                                            <select class="form-control" name="vehicletype1" [(ngModel)]="banner.rec_status"
                                                 [(ngModel)]="showMoreControls" [ngModelOptions]="{standalone: true}">
                                                 <option value="1">Active</option>
                                                 <option value="0">In active</option>
@@ -160,7 +161,7 @@
             </div>
         </div>
     </div>
-</div> 
+</div>
 
 
 <div bsModal #dangerModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -198,7 +199,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" (click)="dangerModal.hide()">Close</button>
-                <button type="button" class="btn btn-danger" (click)="dangerModal.hide();deleteAlert();">Delete</button>
+                <button type="button" class="btn btn-danger" (click)="dangerModal.hide();deleteBannerData();">Delete</button>
             </div>
         </div>
     </div>
