@@ -2,38 +2,16 @@ import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { AlertConfig } from 'ngx-bootstrap/alert';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ToastyService, ToastOptions } from 'ng2-toasty';
+import { ToastyMessageService } from '../../services/toasty-message.service';
 import { BannersService } from '../../services/banners.service';
 import { CompeleteMomsService } from '../../services/compelete-moms.service';
 
 @Component({
-    templateUrl: 'banner.component.html'
+    templateUrl: 'banner.component.html',
+    providers:[ToastyMessageService]
 })
 
 export class BannerComponent implements OnInit {
-    toastOptionsSuccess: ToastOptions = {
-        title: "Success",
-        msg: "Successfully Done",
-        showClose: true,
-        timeout: 3000,
-        theme: 'default'
-    };
-    toastOptionsError: ToastOptions = {
-        title: "Error",
-        msg: "Something is Wrong",
-        showClose: true,
-        timeout: 3000,
-        theme: 'default'
-    };
-    toastOptionsWarn: ToastOptions = {
-        title: "Not Found",
-        msg: "No Data",
-        showClose: true,
-        timeout: 3000,
-        theme: 'default'
-    };
-
-
     bannersData: any = [];
     bannerForm: FormGroup;
     dealAdd: any = [];
@@ -59,7 +37,7 @@ export class BannerComponent implements OnInit {
         'rec_status': ''
     }
 
-    constructor(private service: BannersService, private completeservice: CompeleteMomsService, private spinner: NgxSpinnerService, private toastyService: ToastyService, private formBuilder: FormBuilder, private cdr: ChangeDetectorRef) {
+    constructor(private service: BannersService, private completeservice: CompeleteMomsService, private spinner: NgxSpinnerService, private toastMessage: ToastyMessageService,  private formBuilder: FormBuilder, private cdr: ChangeDetectorRef) {
 
     }
     ngAfterViewChecked() {
@@ -119,20 +97,22 @@ export class BannerComponent implements OnInit {
                 if (!this.banner.promotion_id) {
                     this.bannersData.push(res.json().result)
                     this.completeservice.addBanners(res.json().result)
+                    this.toastMessage.successToast("Banner Added Successfully");
                 } else {
                     let _index = ((this.currentPage - 1) * 3) + this.banner["index"]
                     console.log(_index)
                     if (this.banner.rec_status == '0') {
                         this.bannersData.splice(_index, 1);
-                        this.completeservice.addContentData(this.completeData)
+                        this.completeservice.addContentData(this.completeData);
+                        this.toastMessage.successToast("Banner Updated Successfully");
                     } else {
                         this.bannersData[_index] = res.json().result;
-                        this.completeservice.addBanners(res.json().result)
+                        this.completeservice.addBanners(res.json().result);
+                        this.toastMessage.successToast("Banner Deleted Successfully");
                     }
                 }
-                this.toastyService.success(this.toastOptionsSuccess);
             } else {
-                this.toastyService.error(this.toastOptionsError);
+                this.toastMessage.errorToast('Banner not Added')
             }
         })
     }
@@ -192,11 +172,11 @@ export class BannerComponent implements OnInit {
                 console.log('888')
                 let _index = ((this.currentPage - 1) * 3) + this.deleteRecord["index"]
                 this.bannerData.splice(_index, 1);
-                this.completeservice.addBanners(this.completeData)
-                this.toastyService.success(this.toastOptionsSuccess);
+                this.completeservice.addBanners(this.completeData);
+                this.toastMessage.successToast("Banner Deleted Successfully");
             } else {
-                this.toastyService.error(this.toastOptionsError);
-            }
+                this.toastMessage.errorToast('Banner Not Deleted')
+          }
         });
     }
     removeFields() {

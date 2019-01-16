@@ -10,6 +10,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { HttpModule } from '@angular/http';
 import { SimpleNotificationsModule } from 'angular2-notifications';
+import { ToastyModule } from 'ng2-toasty';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -61,7 +62,8 @@ import { CouponsPipe } from './pipe/coupons.pipe';
     TabsModule.forRoot(),
     SimpleNotificationsModule.forRoot(),
     ChartsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ToastyModule.forRoot()
   ],
   declarations: [
     AppComponent,
@@ -71,7 +73,7 @@ import { CouponsPipe } from './pipe/coupons.pipe';
     CouponsPipe
   ],
   providers: [{
-    provide: LocationStrategy,
+    provide: LocationStrategy, 
     useClass: HashLocationStrategy
   }],
   bootstrap: [AppComponent]

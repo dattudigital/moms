@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ToastyService, ToastOptions } from 'ng2-toasty';
 import { UsersService } from '../../services/users.service';
 import { UserActivitiesService } from '../../services/user-activities.service';
 import { CompeleteMomsService } from '../../services/compelete-moms.service';
@@ -10,27 +9,6 @@ import { CompeleteMomsService } from '../../services/compelete-moms.service';
 })
 
 export class UserActivitiesComponent implements OnInit {
-    toastOptionsSuccess: ToastOptions = {
-        title: "Success",
-        msg: "Successfully Done",
-        showClose: true,
-        timeout: 3000,
-        theme: 'default'
-    };
-    toastOptionsError: ToastOptions = {
-        title: "Error",
-        msg: "Something is Wrong",
-        showClose: true,
-        timeout: 3000,
-        theme: 'default'
-    };
-    toastOptionsWarn: ToastOptions = {
-        title: "Not Found",
-        msg: "No Data",
-        showClose: true,
-        timeout: 3000,
-        theme: 'default'
-    };
     userActivitysData: any = [];
     activitys: any;
     users: any;

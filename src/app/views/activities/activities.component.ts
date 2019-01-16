@@ -3,37 +3,16 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { UserActivitiesService } from '../../services/user-activities.service';
 declare var $: any;
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ToastyService, ToastOptions } from 'ng2-toasty';
+import { ToastyMessageService } from '../../services/toasty-message.service';
 import { Http } from '@angular/http';
 import { CompeleteMomsService } from '../../services/compelete-moms.service';
 
 @Component({
   templateUrl: 'activities.component.html',
+  providers:[ToastyMessageService]
 })
 
 export class ActivitiesComponent implements OnInit {
-  toastOptionsSuccess: ToastOptions = {
-    title: "Success",
-    msg: "Successfully Done",
-    showClose: true,
-    timeout: 3000,
-    theme: 'default'
-  };
-  toastOptionsError: ToastOptions = {
-    title: "Error",
-    msg: "Something is Wrong",
-    showClose: true,
-    timeout: 3000,
-    theme: 'default'
-  };
-  toastOptionsWarn: ToastOptions = {
-    title: "Not Found",
-    msg: "No Data",
-    showClose: true,
-    timeout: 3000,
-    theme: 'default'
-  };
-
   activitys: any;
   copiedRow: any;
   activityForm: FormGroup;
@@ -51,7 +30,7 @@ export class ActivitiesComponent implements OnInit {
   currentPage: any = 1;
 
 
-  constructor(private http: Http, private completeservice: CompeleteMomsService, private activityService: UserActivitiesService, private spinner: NgxSpinnerService, private toastyService: ToastyService, private cdr: ChangeDetectorRef, private formBuilder: FormBuilder) { }
+  constructor(private http: Http, private toastMessage: ToastyMessageService, private completeservice: CompeleteMomsService, private activityService: UserActivitiesService, private spinner: NgxSpinnerService, private cdr: ChangeDetectorRef, private formBuilder: FormBuilder) { }
 
   ngAfterViewChecked() {
     //your code to update the model
@@ -114,20 +93,22 @@ export class ActivitiesComponent implements OnInit {
       if (res.json().status == true) {
         if (!this.activities.activity_id) {
           this.activitys.push(res.json().result)
-          this.completeservice.addActivityData(res.json().result)
+          this.completeservice.addActivityData(res.json().result);
+          this.toastMessage.successToast("Activity Added Successfully");
         } else {
           let _index = ((this.currentPage - 1) * 3) + this.activities["index"]
           if (this.activities.activity_status == '0') {
             this.activitys.splice(_index, 1);
-            this.completeservice.addActivityData(this.completeData)
+            this.completeservice.addActivityData(this.completeData);
+            this.toastMessage.successToast("Activity inactive Successfully");
           } else {
             this.activitys[_index] = res.json().result;
-            this.completeservice.addActivityData(res.json().result)
+            this.completeservice.addActivityData(res.json().result);
+            this.toastMessage.successToast("Activity updated Successfully");
           }
         }
-        this.toastyService.success(this.toastOptionsSuccess);
       } else {
-        this.toastyService.error(this.toastOptionsError);
+        this.toastMessage.errorToast('Activity not Added')
       }
     });
   }
@@ -154,9 +135,9 @@ export class ActivitiesComponent implements OnInit {
         let _index = ((this.currentPage - 1) * 3) + this.deleteRecord["index"]
         this.activitys.splice(_index, 1);
         this.completeservice.addActivityData(this.completeData)
-        this.toastyService.success(this.toastOptionsSuccess);
+        this.toastMessage.successToast("Activity Deleted Successfully");
       } else {
-        this.toastyService.error(this.toastOptionsError);
+        this.toastMessage.errorToast('Activity not deleted')
       }
     });
   }
