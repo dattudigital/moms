@@ -2,37 +2,16 @@ import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ContentService } from '../../services/content.service';
 declare var $: any;
+import { ToastyMessageService } from '../../services/toasty-message.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ToastyService, ToastOptions } from 'ng2-toasty';
 import { CompeleteMomsService } from '../../services/compelete-moms.service';
 
 @Component({
   selector: 'app-content',
-  templateUrl: './content.component.html'
+  templateUrl: './content.component.html',
+  providers:[ToastyMessageService]
 })
 export class ContentComponent implements OnInit {
-
-  toastOptionsSuccess: ToastOptions = {
-    title: "Success",
-    msg: "Successfully Done",
-    showClose: true,
-    timeout: 3000,
-    theme: 'default'
-  };
-  toastOptionsError: ToastOptions = {
-    title: "Error",
-    msg: "Something is Wrong",
-    showClose: true,
-    timeout: 3000,
-    theme: 'default'
-  };
-  toastOptionsWarn: ToastOptions = {
-    title: "Not Found",
-    msg: "No Data",
-    showClose: true,
-    timeout: 3000,
-    theme: 'default'
-  };
 
   content: any = {
     'content_id': null,
@@ -55,7 +34,7 @@ export class ContentComponent implements OnInit {
   userImage: string;
   completeData: any = [];
 
-  constructor(private spinner: NgxSpinnerService, private completeservice: CompeleteMomsService, private service: ContentService, private cdr: ChangeDetectorRef, private toastyService: ToastyService, private formBuilder: FormBuilder) {
+  constructor(private spinner: NgxSpinnerService, private completeservice: CompeleteMomsService, private service: ContentService, private cdr: ChangeDetectorRef, private toastMessage: ToastyMessageService, private formBuilder: FormBuilder) {
   }
 
   ngAfterViewChecked() {
@@ -129,19 +108,21 @@ export class ContentComponent implements OnInit {
         if (!this.content.content_id) {
           this.ContentData.push(res.json().result)
           this.completeservice.addContentData(res.json().result)
+          this.toastMessage.successToast("Content Added Successfully");
         } else {
           let _index = ((this.currentPage - 1) * 3) + this.content["index"]
           if (this.content.content_status == '0') {
             this.ContentData.splice(_index, 1);
             this.completeservice.addContentData(this.completeData)
+            this.toastMessage.successToast("Content inactive Successfully");
           } else {
             this.ContentData[_index] = res.json().result;
             this.completeservice.addContentData(res.json().result)
+            this.toastMessage.successToast("Content updated Successfully");
           }
         }
-        this.toastyService.success(this.toastOptionsSuccess);
       } else {
-        this.toastyService.error(this.toastOptionsError);
+        this.toastMessage.errorToast('Content not Added')
       }
     })
   }
@@ -169,9 +150,9 @@ export class ContentComponent implements OnInit {
         let _index = ((this.currentPage - 1) * 3) + this.deleteRecord["index"]
         this.ContentData.splice(_index, 1);
         this.completeservice.addContentData(this.completeData)
-        this.toastyService.success(this.toastOptionsSuccess);
+        this.toastMessage.successToast("Content  Deleted Successfully");
       } else {
-        this.toastyService.error(this.toastOptionsError);
+        this.toastMessage.errorToast('Activity not deleted')
       }
     });
   }

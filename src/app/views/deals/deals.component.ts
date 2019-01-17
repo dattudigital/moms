@@ -3,7 +3,7 @@ import { DealsService } from '../../services/deals.service'
 import { NgxSpinnerService } from 'ngx-spinner';
 declare var $: any;
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ToastyService, ToastOptions } from 'ng2-toasty';
+import { ToastyMessageService } from '../../services/toasty-message.service';
 import { environment } from '../../../environments/environment'
 import { Http } from '@angular/http';
 import { CompeleteMomsService } from '../../services/compelete-moms.service';
@@ -11,30 +11,9 @@ import { CompeleteMomsService } from '../../services/compelete-moms.service';
 @Component({
   selector: 'app-deals',
   templateUrl: './deals.component.html',
+  providers:[ToastyMessageService]
 })
 export class DealsComponent implements OnInit {
-  toastOptionsSuccess: ToastOptions = {
-    title: "Success",
-    msg: "Successfully Done",
-    showClose: true,
-    timeout: 3000,
-    theme: 'default'
-  };
-  toastOptionsError: ToastOptions = {
-    title: "Error",
-    msg: "Something is Wrong",
-    showClose: true,
-    timeout: 3000,
-    theme: 'default'
-  };
-  toastOptionsWarn: ToastOptions = {
-    title: "Not Found",
-    msg: "No Data",
-    showClose: true,
-    timeout: 3000,
-    theme: 'default'
-  };
-
   deals: any = {
     'deal_id': null,
     'deal_name': '',
@@ -44,7 +23,6 @@ export class DealsComponent implements OnInit {
     'deal_image': '',
     'profile_name': '',
     'deal_status': ''
-
   }
   dealsForm: FormGroup;
   dealTypeData: any = [];
@@ -59,7 +37,7 @@ export class DealsComponent implements OnInit {
   userImage: string;
   completeData: any = [];
 
-  constructor(private spinner: NgxSpinnerService, private http: Http, private service: DealsService, private cdr: ChangeDetectorRef, private toastyService: ToastyService, private formBuilder: FormBuilder, private completeservice: CompeleteMomsService) { }
+  constructor(private spinner: NgxSpinnerService, private toastMessage: ToastyMessageService, private http: Http, private service: DealsService, private cdr: ChangeDetectorRef, private formBuilder: FormBuilder, private completeservice: CompeleteMomsService) { }
 
   ngAfterViewChecked() {
     this.cdr.detectChanges();
@@ -175,19 +153,21 @@ export class DealsComponent implements OnInit {
         if (!this.deals.deal_id) {
           this.dealsData.push(res.json().result)
           this.completeservice.addDealsData(res.json().result)
+          this.toastMessage.successToast("Deals Added Successfully");
         } else {
           let _index = ((this.currentPage - 1) * 3) + this.deals["index"]
           if (this.deals.deal_status == '0') {
             this.dealsData.splice(_index, 1);
             this.completeservice.addDealsData(this.completeData)
+            this.toastMessage.successToast("Deals inactive Successfully");
           } else {
             this.dealsData[_index] = res.json().result;
             this.completeservice.addDealsData(res.json().result)
+            this.toastMessage.successToast("Deals updated Successfully");
           }
         }
-        this.toastyService.success(this.toastOptionsSuccess);
       } else {
-        this.toastyService.error(this.toastOptionsError);
+        this.toastMessage.errorToast('Deals not Added')
       }
     })
   }
@@ -214,9 +194,9 @@ export class DealsComponent implements OnInit {
         let _index = ((this.currentPage - 1) * 3) + this.deleteRecord["index"]
         this.dealsData.splice(_index, 1);
         this.completeservice.addDealsData(this.completeData)
-        this.toastyService.success(this.toastOptionsSuccess);
+        this.toastMessage.successToast("Deals  Deleted Successfully");
       } else {
-        this.toastyService.error(this.toastOptionsError);
+        this.toastMessage.errorToast('Deals not deleted')
       }
     });
   }
