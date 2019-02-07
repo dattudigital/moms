@@ -3,9 +3,12 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { UsersService } from '../../services/users.service';
 import { UserActivitiesService } from '../../services/user-activities.service';
 import { CompeleteMomsService } from '../../services/compelete-moms.service';
-
+import { UserActivityPipe } from '../../pipe/user-activity.pipe';
 @Component({
-    templateUrl: 'user-activities.component.html'
+    templateUrl: 'user-activities.component.html',
+    providers: [
+        UserActivityPipe
+    ]
 })
 
 export class UserActivitiesComponent implements OnInit {
@@ -16,7 +19,7 @@ export class UserActivitiesComponent implements OnInit {
     selctedActivityId: any;
     startDate: any;
     endDate: any;
-    constructor(private service: UsersService, private completeservice: CompeleteMomsService, private spinner: NgxSpinnerService, private activitiyService: UserActivitiesService) {
+    constructor(private service: UsersService, private userpipe: UserActivityPipe, private completeservice: CompeleteMomsService, private spinner: NgxSpinnerService, private activitiyService: UserActivitiesService) {
     }
 
     ngOnInit() {
@@ -26,7 +29,9 @@ export class UserActivitiesComponent implements OnInit {
         } else {
             this.service.getUserActivities('').subscribe(res => {
                 if (res.json().status == true) {
-                    this.userActivitysData = res.json().result
+                    console.log(res.json().result)
+                    this.userActivitysData = this.userpipe.transform(res.json().result);;
+                    console.log(this.userActivitysData)
                     this.completeservice.addUserActivityData(res.json().result)
                 }
             })
@@ -49,7 +54,8 @@ export class UserActivitiesComponent implements OnInit {
             this.users = _user;
         } else {
             this.service.getUser().subscribe(res => {
-                this.users = res.json()
+                this.users = res.json();
+                this.completeservice.addUserData(this.users);
             })
         }
     }

@@ -7,11 +7,10 @@ import { CompeleteMomsService } from '../../services/compelete-moms.service';
 
 @Component({
     templateUrl: 'user.component.html',
-    providers:[ToastyMessageService]
+    providers: [ToastyMessageService]
 })
 
 export class UserComponent implements OnInit {
-
     usersData: any = [];
     deleteRecord: '';
     currentPage: any = 1;
@@ -43,12 +42,11 @@ export class UserComponent implements OnInit {
     }
 
     deleteUserData() {
-        let _userData: any = []
         this.service.saveUser({ user_id: this.deleteRecord["user_id"], status: 0 }).subscribe(res => {
             if (res.json().status == true) {
                 let _index = ((this.currentPage - 1) * 3) + this.deleteRecord["index"]
                 this.usersData.splice(_index, 1);
-                this.completeservice.addUserData(_userData)
+                this.completeservice.addUserData([])
                 this.toastMessage.successToast("User Deleted Successfully");
             } else {
                 this.toastMessage.errorToast('user not deleted')

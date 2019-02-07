@@ -8,22 +8,23 @@ import { NgxSpinnerService } from 'ngx-spinner';
   templateUrl: 'dashboard.component.html'
 })
 export class DashboardComponent implements OnInit {
-  completeDashboardData:any
+  completeDashboardData: any
   garphData: any;
   mainChartData1: Array<number> = [];;
   mainChartData1Test: Array<number> = [];
 
   constructor(private spinner: NgxSpinnerService, private service: DashboardService) {
   }
-  
+
   ngOnInit() {
-  
+    this.spinner.show()
     this.service.getallCountForDashboard().subscribe(res => {
+      this.spinner.hide()
       console.log(res.json())
       this.completeDashboardData = res.json();
     })
 
-     this.mainChartData1.push(1,1,2,2,1,1,1,2,2,2,4,3,1,1,3,3,2,1,2,2,2,1); 
+    this.mainChartData1.push(1, 1, 2, 2, 1, 1, 1, 2, 2, 2, 4, 3, 1, 1, 3, 3, 2, 1, 2, 2, 2, 1);
   }
 
   transformJsonToCustomFormat(input: any[]) {

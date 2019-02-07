@@ -10,7 +10,7 @@ export const navItems = [
     icon: 'icon-drop'
   },
   {
-    name: 'user-activities',
+    name: 'User-activities',
     url: '/all/user-activities',
     icon: 'icon-drop'
   },
@@ -30,7 +30,7 @@ export const navItems = [
     icon: 'icon-plus'
   },
   {
-    name: 'banners',
+    name: 'Banners',
     url: '/all/banners',
     icon: 'icon-drop'
   }

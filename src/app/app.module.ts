@@ -41,8 +41,7 @@ import { AppRoutingModule } from './app.routing';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts/ng2-charts';
-import { BeautyTipPipe } from './pipe/beauty-tip.pipe';
-import { CouponsPipe } from './pipe/coupons.pipe';
+import { UserActivityPipe } from './pipe/user-activity.pipe';
 @NgModule({
   imports: [
     BrowserModule,
@@ -69,8 +68,7 @@ import { CouponsPipe } from './pipe/coupons.pipe';
     AppComponent,
     ...APP_CONTAINERS,
     LoginComponent,
-    BeautyTipPipe,
-    CouponsPipe
+    UserActivityPipe
   ],
   providers: [{
     provide: LocationStrategy, 
