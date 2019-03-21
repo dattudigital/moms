@@ -5,11 +5,12 @@ declare var $: any;
 import { ToastyMessageService } from '../../services/toasty-message.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CompeleteMomsService } from '../../services/compelete-moms.service';
+import { ExcelServiceService } from '../../services/excel-service.service';
 
 @Component({
   selector: 'app-content',
   templateUrl: './content.component.html',
-  providers:[ToastyMessageService]
+  providers: [ToastyMessageService]
 })
 export class ContentComponent implements OnInit {
 
@@ -33,8 +34,9 @@ export class ContentComponent implements OnInit {
   userimagePreview: any;
   userImage: string;
   completeData: any = [];
+  excelData: any = [];
 
-  constructor(private spinner: NgxSpinnerService, private completeservice: CompeleteMomsService, private service: ContentService, private cdr: ChangeDetectorRef, private toastMessage: ToastyMessageService, private formBuilder: FormBuilder) {
+  constructor(private spinner: NgxSpinnerService, private excelService: ExcelServiceService, private completeservice: CompeleteMomsService, private service: ContentService, private cdr: ChangeDetectorRef, private toastMessage: ToastyMessageService, private formBuilder: FormBuilder) {
   }
 
   ngAfterViewChecked() {
@@ -47,7 +49,7 @@ export class ContentComponent implements OnInit {
       this.ContentData = _content
     } else {
       this.spinner.show();
-      this.service.listContentDetails().subscribe(response => {
+      this.service.listContentDetails('0').subscribe(response => {
         this.spinner.hide();
         if (response.json().status == true) {
           this.ContentData = response.json().result;
@@ -182,6 +184,17 @@ export class ContentComponent implements OnInit {
     if (this.content.content_id) {
       this.isShowOriginalImg = true;
     }
+  }
+
+  exportAsXLSX(): void {
+    this.service.listContentDetails('1').subscribe(res => {
+      if (res.json().status == true) {
+        this.excelData = res.json().result;
+      } else {
+        this.excelData = [];
+      }
+      this.excelService.exportAsExcelFile(this.excelData, 'Content');
+    })
   }
 
 }

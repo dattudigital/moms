@@ -5,10 +5,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastyMessageService } from '../../services/toasty-message.service';
 import { BannersService } from '../../services/banners.service';
 import { CompeleteMomsService } from '../../services/compelete-moms.service';
+import { ExcelServiceService } from '../../services/excel-service.service';
 
 @Component({
     templateUrl: 'banner.component.html',
-    providers:[ToastyMessageService]
+    providers: [ToastyMessageService]
 })
 
 export class BannerComponent implements OnInit {
@@ -25,19 +26,20 @@ export class BannerComponent implements OnInit {
     userimagePreview: any;
     userImage: string;
     completeData: any = [];
+    excelData: any = [];
 
     banner: any = {
         'promotion_id': null,
         'promotion_name': '',
         'promotion_type': '',
         'promotion_img': '',
-        'promotion_img_name':'',
+        'promotion_img_name': '',
         'promotion_description': '',
         'promotion_for': '',
         'rec_status': ''
     }
 
-    constructor(private service: BannersService, private completeservice: CompeleteMomsService, private spinner: NgxSpinnerService, private toastMessage: ToastyMessageService,  private formBuilder: FormBuilder, private cdr: ChangeDetectorRef) {
+    constructor(private service: BannersService, private excelService: ExcelServiceService, private completeservice: CompeleteMomsService, private spinner: NgxSpinnerService, private toastMessage: ToastyMessageService, private formBuilder: FormBuilder, private cdr: ChangeDetectorRef) {
 
     }
     ngAfterViewChecked() {
@@ -49,7 +51,7 @@ export class BannerComponent implements OnInit {
         if (Object.keys(_banner).length) {
             this.bannersData = _banner
         } else {
-            this.service.listBanners().subscribe(res => {
+            this.service.listBanners('0').subscribe(res => {
                 if (res.json().status == true) {
                     this.bannersData = res.json().result;
                     this.completeservice.addBanners(res.json().result)
@@ -84,7 +86,7 @@ export class BannerComponent implements OnInit {
             promotion_name: this.banner.promotion_name,
             promotion_type: this.banner.promotion_type,
             promotion_img: this.banner.promotion_img,
-            promotion_img_name:this.banner.promotion_img_name,
+            promotion_img_name: this.banner.promotion_img_name,
             promotion_description: this.banner.promotion_description,
             promotion_for: this.banner.promotion_for,
             rec_status: this.banner.rec_status
@@ -176,7 +178,7 @@ export class BannerComponent implements OnInit {
                 this.toastMessage.successToast("Banner Deleted Successfully");
             } else {
                 this.toastMessage.errorToast('Banner Not Deleted')
-          }
+            }
         });
     }
     removeFields() {
@@ -187,5 +189,15 @@ export class BannerComponent implements OnInit {
         this.banner.promotion_description = '';
         this.banner.promotion_for = '';
         this.banner.rec_status = '';
+    }
+    exportAsXLSX(): void {
+        this.service.listBanners('1').subscribe(res => {
+            if (res.json().status == true) {
+                this.excelData = res.json().result;
+            } else {
+                this.excelData = [];
+            }
+            this.excelService.exportAsExcelFile(this.excelData, 'Banners');
+        })
     }
 }

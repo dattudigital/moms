@@ -12,8 +12,8 @@ export class UserActivitiesService {
     return this.http.post(environment.host + 'activities', activity);
   }
 
-  public getActivity() {
-    return this.http.get(environment.host + 'activities');
+  public getActivity(type: any) {
+    return this.http.get(environment.host + 'activities?type=' + type);
   }
 
 }

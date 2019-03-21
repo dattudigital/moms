@@ -41,7 +41,7 @@ export class UserActivitiesComponent implements OnInit {
         if (Object.keys(_activity).length) {
             this.activitys = _activity
         } else {
-            this.activitiyService.getActivity().subscribe(res => {
+            this.activitiyService.getActivity('0').subscribe(res => {
                 if (res.json().status == true) {
                     this.activitys = res.json().result;
                     this.completeservice.addActivityData(res.json().result)
@@ -53,7 +53,7 @@ export class UserActivitiesComponent implements OnInit {
         if (Object.keys(_user).length) {
             this.users = _user;
         } else {
-            this.service.getUser().subscribe(res => {
+            this.service.getUser('0').subscribe(res => {
                 this.users = res.json();
                 this.completeservice.addUserData(this.users);
             })

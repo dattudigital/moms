@@ -6,10 +6,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastyMessageService } from '../../services/toasty-message.service';
 import { Http } from '@angular/http';
 import { CompeleteMomsService } from '../../services/compelete-moms.service';
+import { ExcelServiceService } from '../../services/excel-service.service';
 
 @Component({
   templateUrl: 'activities.component.html',
-  providers:[ToastyMessageService]
+  providers: [ToastyMessageService]
 })
 
 export class ActivitiesComponent implements OnInit {
@@ -28,9 +29,10 @@ export class ActivitiesComponent implements OnInit {
   deleteRecord = '';
   completeData: any = [];
   currentPage: any = 1;
+  excelData: any = [];
 
 
-  constructor(private http: Http, private toastMessage: ToastyMessageService, private completeservice: CompeleteMomsService, private activityService: UserActivitiesService, private spinner: NgxSpinnerService, private cdr: ChangeDetectorRef, private formBuilder: FormBuilder) { }
+  constructor(private http: Http, private excelService: ExcelServiceService, private toastMessage: ToastyMessageService, private completeservice: CompeleteMomsService, private activityService: UserActivitiesService, private spinner: NgxSpinnerService, private cdr: ChangeDetectorRef, private formBuilder: FormBuilder) { }
 
   ngAfterViewChecked() {
     //your code to update the model
@@ -43,7 +45,7 @@ export class ActivitiesComponent implements OnInit {
     if (Object.keys(_activity).length) {
       this.activitys = _activity
     } else {
-      this.activityService.getActivity().subscribe(res => {
+      this.activityService.getActivity('0').subscribe(res => {
         if (res.json().status == true) {
           this.activitys = res.json().result;
           this.completeservice.addActivityData(res.json().result)
@@ -139,6 +141,19 @@ export class ActivitiesComponent implements OnInit {
       } else {
         this.toastMessage.errorToast('Activity not deleted')
       }
+    });
+  }
+
+  exportAsXLSX() {
+    this.spinner.show();
+    this.activityService.getActivity('1').subscribe(response => {
+      this.spinner.hide();
+      if (response.json().status == true) {
+        this.excelData = response.json().result;
+      } else {
+        this.excelData = [];
+      }
+      this.excelService.exportAsExcelFile(this.excelData, 'Activity');
     });
   }
 

@@ -4,6 +4,7 @@ import { FormBuilder } from '@angular/forms';
 import { ToastyMessageService } from '../../services/toasty-message.service';
 import { UsersService } from '../../services/users.service'
 import { CompeleteMomsService } from '../../services/compelete-moms.service';
+import { ExcelServiceService } from '../../services/excel-service.service';
 
 @Component({
     templateUrl: 'user.component.html',
@@ -14,8 +15,9 @@ export class UserComponent implements OnInit {
     usersData: any = [];
     deleteRecord: '';
     currentPage: any = 1;
+    excelData: any = [];
 
-    constructor(private spinner: NgxSpinnerService, private toastMessage: ToastyMessageService, private completeservice: CompeleteMomsService, private cdr: ChangeDetectorRef, private service: UsersService, private formBuilder: FormBuilder) {
+    constructor(private spinner: NgxSpinnerService, private excelService: ExcelServiceService, private toastMessage: ToastyMessageService, private completeservice: CompeleteMomsService, private cdr: ChangeDetectorRef, private service: UsersService, private formBuilder: FormBuilder) {
     }
 
     ngAfterViewChecked() {
@@ -28,7 +30,7 @@ export class UserComponent implements OnInit {
             this.usersData = _user
         } else {
             this.spinner.show()
-            this.service.getUser().subscribe(res => {
+            this.service.getUser('0').subscribe(res => {
                 this.spinner.hide();
                 this.usersData = res.json();
                 this.completeservice.addUserData(res.json())
@@ -51,6 +53,15 @@ export class UserComponent implements OnInit {
             } else {
                 this.toastMessage.errorToast('user not deleted')
             }
+        });
+    }
+
+    exportAsXLSX() {
+        this.spinner.show()
+        this.service.getUser('1').subscribe(res => {
+            this.spinner.hide();
+            this.excelData = res.json();
+            this.excelService.exportAsExcelFile(this.excelData, 'Users');
         });
     }
 

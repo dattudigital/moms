@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Http} from '@angular/http';
-import {environment} from '../../environments/environment';
+import { Http } from '@angular/http';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -8,14 +8,14 @@ import {environment} from '../../environments/environment';
 
 export class BannersService {
 
-  constructor(private http:Http) { }
-  
+  constructor(private http: Http) { }
+
   public saveBanners(data: any) {
-    return this.http.post(environment.host + 'promotions',data);
+    return this.http.post(environment.host + 'promotions', data);
   }
-  
-  public listBanners(){
-    return this.http.get( environment.host + 'promotions');
+
+  public listBanners(type: any) {
+    return this.http.get(environment.host + 'promotions?type=' + type);
   }
 
 }
