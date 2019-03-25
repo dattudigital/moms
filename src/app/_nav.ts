@@ -2,17 +2,17 @@ export const navItems = [
   {
     name: 'Dashboard',
     url: '/dashboard',
-    icon: 'icon-home'
+    icon: 'cui-dashboard'
   },
   {
-    name: 'users',
+    name: 'Users',
     url: '/all/users',
-    icon: 'icon-drop'
+    icon: 'icon-people'
   },
   {
     name: 'User-activities',
     url: '/all/user-activities',
-    icon: 'icon-drop'
+    icon: 'icon-note'
   },
   {
     name: 'Activities',
@@ -22,7 +22,7 @@ export const navItems = [
   {
     name: 'Deals',
     url: '/deals',
-    icon: 'icon-plus'
+    icon: 'cui-tags'
   },
   {
     name: 'Content',

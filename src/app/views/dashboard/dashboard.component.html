@@ -159,6 +159,43 @@
         </div>
       </div>
     </div> -->
+    
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            Registered Users
+          </div>
+          <div class="card-body">
+                  <div class="col-sm-7 d-none d-md-block">
+                    <div class="btn-group btn-group-toggle float-right mr-3" data-toggle="buttons">
+                    </div>
+                  </div>
+        
+                <div class="chart-wrapper" style="height:300px;margin-top:40px;">
+                  <canvas baseChart class="chart" [datasets]="mainChartData" [labels]="mainChartLabels"
+                    [options]="mainChartOptions" [colors]="mainChartColours" [legend]="mainChartLegend"
+                    [chartType]="mainChartType"></canvas>
+                </div>
+                    
+          </div>
+        </div>
+      </div>
+      <!-- <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            User Activities
+          </div>
+          <div class="card-body">
+                    
+          </div>
+        </div>
+      </div> -->
+    </div>
+
+
+
+
 </div>
 
 <!-- <div class="row">

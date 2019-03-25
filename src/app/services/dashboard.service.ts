@@ -11,7 +11,7 @@ export class DashboardService {
   constructor(private http: Http) { }
   
   public getGraphdata() {
-    return this.http.get(environment.host + 'graphs');
+    return this.http.get(environment.host + 'graph');
   }
   public getallCountForDashboard() {
     return this.http.get(environment.host + 'webdashboard');
