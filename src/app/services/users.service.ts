@@ -13,11 +13,11 @@ export class UsersService {
     return this.http.post(environment.host + 'users', user);
   }
 
-  public getUser() {
-    return this.http.get(environment.host + 'users');
+  public getUser(type: any) {
+    return this.http.get(environment.host + 'users?type=' + type);
   }
 
-  public getUserActivities(URL:any) {
-    return this.http.get(environment.host + 'user-activities?'+URL);
+  public getUserActivities(URL: any) {
+    return this.http.get(environment.host + 'user-activities?' + URL);
   }
 }

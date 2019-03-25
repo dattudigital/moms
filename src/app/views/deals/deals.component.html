@@ -6,10 +6,13 @@
 
 <div class="card-body">
     <div class="row">
-        <div class="col-6 col-sm-4 col-md text-center">
-            <button (click)="removeFields();addOrUpdateDeals.show()" class="btn btn-primary" style="float: right;"><i
+        <div class="col-9"></div>
+        <div class="col-3">
+            <button (click)="removeFields();addOrUpdateDeals.show()" class="btn btn-primary"><i
                     class="fa fa-lightbulb-o"></i>&nbsp;Create
-                Deals</button>
+                Deals</button> &nbsp;&nbsp;&nbsp;
+            <button style="margin-right:34px" (click)="exportAsXLSX()"><i class="fa fa-file-excel-o  "
+                    style="font-size:15px;color:blue"></i></button>
         </div>
     </div>
 </div>
@@ -35,15 +38,18 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let list of dealsData | paginate: { itemsPerPage: 3, currentPage: currentPage };let i=index;">
+                            <tr
+                                *ngFor="let list of dealsData | paginate: { itemsPerPage: 3, currentPage: currentPage };let i=index;">
                                 <td>{{list.deal_name}}</td>
                                 <td>{{list.deal_type}}</td>
                                 <td>{{list.deal_long_desc}}</td>
                                 <td>{{list.deal_short_desc}}</td>
                                 <td> <img [src]="list.deal_image" height="50"></td>
-                                <td> <button class="btn-primary" data-toggle="modal" (click)="addOrUpdateDeals.show();editDeal(list,i)"><i
+                                <td> <button class="btn-primary" data-toggle="modal"
+                                        (click)="addOrUpdateDeals.show();editDeal(list,i)"><i
                                             class="fa fa-edit"></i></button></td>
-                                <td> <button class="btn-danger" data-toggle="modal" (click)="dangerModal.show();deleteDeal(list,i)"><i
+                                <td> <button class="btn-danger" data-toggle="modal"
+                                        (click)="dangerModal.show();deleteDeal(list,i)"><i
                                             class="fa fa-trash"></i></button></td>
                             </tr>
                         </tbody>
@@ -66,25 +72,32 @@
                         <div class="card-header">
                             <strong *ngIf="!deals.deal_id">Add Deals</strong>
                             <strong *ngIf="deals.deal_id">Edit Deals</strong>
-                            <button type="button" class="close" (click)="addOrUpdateDeals.hide();backupData()">&times;</button>
+                            <button type="button" class="close"
+                                (click)="addOrUpdateDeals.hide();backupData()">&times;</button>
                         </div>
                         <div class="card-body">
                             <form name="form" [formGroup]="dealsForm">
                                 <div class="form-group row">
-                                    <label class="col-md-3 col-form-label" for="select1">Name<b style="color:red">*</b></label>
+                                    <label class="col-md-3 col-form-label" for="select1">Name<b
+                                            style="color:red">*</b></label>
                                     <div class="col-md-9">
                                         <input type="text" maxlength="50" formControlName="Name" class="form-control"
-                                            placeholder="Name" [(ngModel)]="deals.deal_name" [ngClass]="{ 'is-invalid': submitted && f.Name.errors }" />
+                                            placeholder="Name" [(ngModel)]="deals.deal_name"
+                                            [ngClass]="{ 'is-invalid': submitted && f.Name.errors }" />
                                         <div *ngIf="submitted && f.Name.errors" class="invalid-feedback">
-                                            <div *ngIf="f.Name.errors.required" style="color:red">Deal Name is required</div>
+                                            <div *ngIf="f.Name.errors.required" style="color:red">Deal Name is required
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 col-form-label" for="text-input">Short Description <b style="color:red">*</b></label>
+                                    <label class="col-md-3 col-form-label" for="text-input">Short Description <b
+                                            style="color:red">*</b></label>
                                     <div class="col-md-9">
-                                        <input type="text" maxlength="50" formControlName="shortDescription" class="form-control"
-                                            placeholder=" Description" [(ngModel)]="deals.deal_short_desc" [ngClass]="{ 'is-invalid': submitted && f.shortDescription.errors }" />
+                                        <input type="text" maxlength="50" formControlName="shortDescription"
+                                            class="form-control" placeholder=" Description"
+                                            [(ngModel)]="deals.deal_short_desc"
+                                            [ngClass]="{ 'is-invalid': submitted && f.shortDescription.errors }" />
                                         <div *ngIf="submitted && f.shortDescription.errors" class="invalid-feedback">
                                             <div *ngIf="f.shortDescription.errors.required" style="color:red">Short
                                                 Description is required</div>
@@ -94,20 +107,25 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="text-input">Description</label>
                                     <div class="col-md-9">
-                                        <textarea type="text" maxlength="500" rows="5" class="form-control" placeholder="Enter LongDescription"
-                                            [(ngModel)]="deals.deal_long_desc" [(ngModel)]="showMoreControls"
+                                        <textarea type="text" maxlength="500" rows="5" class="form-control"
+                                            placeholder="Enter LongDescription" [(ngModel)]="deals.deal_long_desc"
+                                            [(ngModel)]="showMoreControls"
                                             [ngModelOptions]="{standalone: true}"></textarea>
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 col-form-label" for="select1">Type<b style="color:red">*</b></label>
+                                    <label class="col-md-3 col-form-label" for="select1">Type<b
+                                            style="color:red">*</b></label>
                                     <div class="col-md-9">
                                         <select id="select1" name="select1" class="form-control" formControlName="Type"
-                                            [(ngModel)]="deals.deal_type" (ngModelChange)="getDealsType()" [ngClass]="{ 'is-invalid': submitted && f.Type.errors }">
-                                            <option *ngFor="let data1 of dealTypeData" [ngValue]="data1.content_cat_id">{{data1.content_cat_name}}</option>
+                                            [(ngModel)]="deals.deal_type" (ngModelChange)="getDealsType()"
+                                            [ngClass]="{ 'is-invalid': submitted && f.Type.errors }">
+                                            <option *ngFor="let data1 of dealTypeData" [ngValue]="data1.content_cat_id">
+                                                {{data1.content_cat_name}}</option>
                                         </select>
                                         <div *ngIf="submitted && f.Type.errors" class="invalid-feedback">
-                                            <div *ngIf="f.Type.errors.required" style="color:red">Please select Type</div>
+                                            <div *ngIf="f.Type.errors.required" style="color:red">Please select Type
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -135,15 +153,17 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="text-input"></label>
                                     <div class="col-md-9">
-                                        <input type="file" name="photo" accept="image/*" (change)="getFileDetails($event)" />
+                                        <input type="file" name="photo" accept="image/*"
+                                            (change)="getFileDetails($event)" />
                                     </div>
                                 </div>
                                 <div *ngIf="deals.deal_id">
                                     <div class="form-group row">
                                         <label class="col-md-3 col-form-label" for="text-input">Status</label>
                                         <div class="col-md-9">
-                                            <select class="form-control" name="vehicletype1" [(ngModel)]="deals.deal_status"
-                                                [(ngModel)]="showMoreControls" [ngModelOptions]="{standalone: true}">
+                                            <select class="form-control" name="vehicletype1"
+                                                [(ngModel)]="deals.deal_status" [(ngModel)]="showMoreControls"
+                                                [ngModelOptions]="{standalone: true}">
                                                 <option value="1">Active</option>
                                                 <option value="0">In active</option>
                                             </select>
@@ -151,13 +171,16 @@
                                     </div>
                                 </div>
                                 <span *ngIf="!deals.deal_id">
-                                    <button style="margin-left: 26%;" class="btn btn-primary" (click)="addOrUpdateDeal()">ADD</button>
+                                    <button style="margin-left: 26%;" class="btn btn-primary"
+                                        (click)="addOrUpdateDeal()">ADD</button>
                                 </span>
                                 <span *ngIf="deals.deal_id">
-                                    <button style="margin-left: 26%;" class="btn btn-primary" (click)="addOrUpdateDeal()">Update</button>
+                                    <button style="margin-left: 26%;" class="btn btn-primary"
+                                        (click)="addOrUpdateDeal()">Update</button>
                                 </span>
                                 &nbsp;&nbsp;
-                                <button type="button" id="CloseButton" class="btn btn-secondary" (click)="addOrUpdateDeals.hide();backupData()">Close</button>
+                                <button type="button" id="CloseButton" class="btn btn-secondary"
+                                    (click)="addOrUpdateDeals.hide();backupData()">Close</button>
                             </form>
                         </div>
                     </div>

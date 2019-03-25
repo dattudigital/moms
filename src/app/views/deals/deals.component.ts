@@ -7,11 +7,12 @@ import { ToastyMessageService } from '../../services/toasty-message.service';
 import { environment } from '../../../environments/environment'
 import { Http } from '@angular/http';
 import { CompeleteMomsService } from '../../services/compelete-moms.service';
+import { ExcelServiceService } from '../../services/excel-service.service';
 
 @Component({
   selector: 'app-deals',
   templateUrl: './deals.component.html',
-  providers:[ToastyMessageService]
+  providers: [ToastyMessageService]
 })
 export class DealsComponent implements OnInit {
   deals: any = {
@@ -36,8 +37,9 @@ export class DealsComponent implements OnInit {
   userimagePreview: any;
   userImage: string;
   completeData: any = [];
+  excelData: any = [];
 
-  constructor(private spinner: NgxSpinnerService, private toastMessage: ToastyMessageService, private http: Http, private service: DealsService, private cdr: ChangeDetectorRef, private formBuilder: FormBuilder, private completeservice: CompeleteMomsService) { }
+  constructor(private spinner: NgxSpinnerService, private excelService: ExcelServiceService, private toastMessage: ToastyMessageService, private http: Http, private service: DealsService, private cdr: ChangeDetectorRef, private formBuilder: FormBuilder, private completeservice: CompeleteMomsService) { }
 
   ngAfterViewChecked() {
     this.cdr.detectChanges();
@@ -49,7 +51,7 @@ export class DealsComponent implements OnInit {
       this.dealsData = _deals
     } else {
       this.spinner.show();
-      this.service.listDealDetails().subscribe(response => {
+      this.service.listDealDetails('0').subscribe(response => {
         if (response.json().status == true) {
           this.spinner.hide();
           this.dealsData = response.json().result;
@@ -198,6 +200,19 @@ export class DealsComponent implements OnInit {
       } else {
         this.toastMessage.errorToast('Deals not deleted')
       }
+    });
+  }
+
+  exportAsXLSX() {
+    this.spinner.show();
+    this.service.listDealDetails('1').subscribe(response => {
+      this.spinner.hide();
+      if (response.json().status == true) {
+        this.excelData = response.json().result;
+      } else {
+        this.excelData = [];
+      }
+      this.excelService.exportAsExcelFile(this.excelData, 'Deals');
     });
   }
 

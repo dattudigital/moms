@@ -4,6 +4,8 @@ import { UsersService } from '../../services/users.service';
 import { UserActivitiesService } from '../../services/user-activities.service';
 import { CompeleteMomsService } from '../../services/compelete-moms.service';
 import { UserActivityPipe } from '../../pipe/user-activity.pipe';
+import { ExcelServiceService } from '../../services/excel-service.service';
+
 @Component({
     templateUrl: 'user-activities.component.html',
     providers: [
@@ -19,7 +21,9 @@ export class UserActivitiesComponent implements OnInit {
     selctedActivityId: any;
     startDate: any;
     endDate: any;
-    constructor(private service: UsersService, private userpipe: UserActivityPipe, private completeservice: CompeleteMomsService, private spinner: NgxSpinnerService, private activitiyService: UserActivitiesService) {
+    excelData: any = [];
+
+    constructor(private service: UsersService, private excelService: ExcelServiceService, private userpipe: UserActivityPipe, private completeservice: CompeleteMomsService, private spinner: NgxSpinnerService, private activitiyService: UserActivitiesService) {
     }
 
     ngOnInit() {
@@ -41,7 +45,7 @@ export class UserActivitiesComponent implements OnInit {
         if (Object.keys(_activity).length) {
             this.activitys = _activity
         } else {
-            this.activitiyService.getActivity().subscribe(res => {
+            this.activitiyService.getActivity('0').subscribe(res => {
                 if (res.json().status == true) {
                     this.activitys = res.json().result;
                     this.completeservice.addActivityData(res.json().result)
@@ -53,7 +57,7 @@ export class UserActivitiesComponent implements OnInit {
         if (Object.keys(_user).length) {
             this.users = _user;
         } else {
-            this.service.getUser().subscribe(res => {
+            this.service.getUser('0').subscribe(res => {
                 this.users = res.json();
                 this.completeservice.addUserData(this.users);
             })
@@ -87,5 +91,16 @@ export class UserActivitiesComponent implements OnInit {
         this.selctedActivityId = undefined;
         this.startDate = null;
         this.endDate = " ";
+    }
+
+    exportAsXLSX() {
+        this.service.getUserActivities('').subscribe(res => {
+            if (res.json().status == true) {
+                console.log(res.json().result)
+                this.excelData = this.userpipe.transform(res.json().result);;
+                console.log(this.excelData)
+                this.excelService.exportAsExcelFile(this.excelData, 'Useractivity');
+            }
+        })
     }
 }

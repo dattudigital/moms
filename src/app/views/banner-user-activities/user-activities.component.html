@@ -14,7 +14,8 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-2">
-                            <select name="activityname" class="form-control custom-select-value" [(ngModel)]="selectedUserId">
+                            <select name="activityname" class="form-control custom-select-value"
+                                [(ngModel)]="selectedUserId">
                                 <option [ngValue]="undefined" disabled selected>Select User Name</option>
                                 <option *ngFor="let user of users" [ngValue]="user.user_id">{{user.fname+"
                                     "+user.lname}}
@@ -24,7 +25,8 @@
                         <div class="col-md-2">
                             <select class="form-control" name=" activity" [(ngModel)]="selctedActivityId">
                                 <option [ngValue]="undefined" disabled selected>Select Activities</option>
-                                <option *ngFor="let activity of activitys" [ngValue]=" activity.activity_id">{{activity.activity_name}}</option>
+                                <option *ngFor="let activity of activitys" [ngValue]=" activity.activity_id">
+                                    {{activity.activity_name}}</option>
                             </select>
                         </div>
                         <div class="col-md-2">
@@ -38,7 +40,9 @@
                             </button>
                             &nbsp;
                             <button class="btn btn-sm btn-warning login-submit-cs" (click)="reset()" type="submit">Reset
-                            </button>
+                            </button> &nbsp;&nbsp;&nbsp;
+                            <button style="margin-right:34px" (click)="exportAsXLSX()"><i class="fa fa-file-excel-o  "
+                                    style="font-size:15px;color:blue"></i></button>
                         </div>
                     </div>
                     <div class="row">
@@ -55,7 +59,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let userActivity of userActivitysData | paginate: { itemsPerPage: 3, currentPage: currentPage };let i=index;">
+                                <tr
+                                    *ngFor="let userActivity of userActivitysData | paginate: { itemsPerPage: 3, currentPage: currentPage };let i=index;">
                                     <td>{{userActivity.fname +" "+userActivity.lname}}</td>
                                     <td>{{userActivity.activity_name}}</td>
                                     <td>{{userActivity.user_activity_startedon | date:'mediumDate'}}</td>

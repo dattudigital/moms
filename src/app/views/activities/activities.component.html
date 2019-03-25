@@ -1,13 +1,16 @@
 <ngx-spinner bdColor="rgba(51, 51, 51, 0.8)" size="medium" color="#fff" type="ball-scale-multiple">
   <p style="font-size: 20px; color: white">Loading...</p>
 </ngx-spinner>
-<ng2-toasty ></ng2-toasty>
+<ng2-toasty></ng2-toasty>
 
 <div class="card-body">
   <div class="row">
-    <div class="col-6 col-sm-4 col-md text-center">
-      <button type="button" (click)="removeFields();addorUpdateActivity.show();" class="btn btn-primary" style="float: right;"><i
-          class="fa fa-lightbulb-o"></i>&nbsp;Add Activity</button>
+    <div class="col-9"></div>
+    <div class="col-3">
+      <button type="button" (click)="removeFields();addorUpdateActivity.show();" class="btn btn-primary"><i
+          class="fa fa-lightbulb-o"></i>&nbsp;Add Activity</button> &nbsp;&nbsp;&nbsp;
+      <button style="margin-right:34px" (click)="exportAsXLSX()"><i class="fa fa-file-excel-o  "
+          style="font-size:15px;color:blue"></i></button>
     </div>
   </div>
 </div>
@@ -35,10 +38,12 @@
                 <td>{{list.activity_name}}</td>
                 <td>{{list.activity_type}}</td>
                 <td>{{list.activity_desc}}</td>
-                <td> <button class="btn-primary" data-toggle="modal" (click)="addorUpdateActivity.show();editUserActivity(list,i)"><i
-                      class="fa fa-edit"></i></button></td>
-                <td> <button class="btn-danger" data-toggle="modal" (click)="deleteActivity.show();deleteUserActivities(list,i)"><i
-                      class="fa fa-trash"></i></button></td>
+                <td> <button class="btn-primary" data-toggle="modal"
+                    (click)="addorUpdateActivity.show();editUserActivity(list,i)"><i class="fa fa-edit"></i></button>
+                </td>
+                <td> <button class="btn-danger" data-toggle="modal"
+                    (click)="deleteActivity.show();deleteUserActivities(list,i)"><i class="fa fa-trash"></i></button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -49,8 +54,8 @@
   </div>
 </div>
 
-<div bsModal #addorUpdateActivity="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  aria-hidden="true">
+<div bsModal #addorUpdateActivity="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="row">
@@ -64,10 +69,12 @@
             <div class="card-body">
               <form [formGroup]="activityForm">
                 <div class="form-group row">
-                  <label class="col-md-3 col-form-label" for="text-input">Activity Name<b style="color:red">*</b></label>
+                  <label class="col-md-3 col-form-label" for="text-input">Activity Name<b
+                      style="color:red">*</b></label>
                   <div class="col-md-9">
                     <textarea type="text" rows="5" maxlength="500" formControlName="Name" class="form-control"
-                      placeholder="Activity Name" [(ngModel)]="activities.activity_name" [ngClass]="{ 'is-invalid': submitted && f.Name.errors }"></textarea>
+                      placeholder="Activity Name" [(ngModel)]="activities.activity_name"
+                      [ngClass]="{ 'is-invalid': submitted && f.Name.errors }"></textarea>
                     <div *ngIf="submitted && f.Name.errors" class="invalid-feedback">
                       <div *ngIf="f.Name.errors.required" style="color:red">Activity Name required</div>
                     </div>
@@ -75,10 +82,12 @@
                 </div>
 
                 <div class="form-group row">
-                  <label class="col-md-3 col-form-label" for="text-input">Activity Type<b style="color:red">*</b></label>
+                  <label class="col-md-3 col-form-label" for="text-input">Activity Type<b
+                      style="color:red">*</b></label>
                   <div class="col-md-9">
                     <textarea type="text" rows="5" maxlength="500" formControlName="Type" class="form-control"
-                      placeholder="activity type" [(ngModel)]="activities.activity_type" [ngClass]="{ 'is-invalid': submitted && f.Type.errors }"></textarea>
+                      placeholder="activity type" [(ngModel)]="activities.activity_type"
+                      [ngClass]="{ 'is-invalid': submitted && f.Type.errors }"></textarea>
                     <div *ngIf="submitted && f.Type.errors" class="invalid-feedback">
                       <div *ngIf="f.Type.errors.required" style="color:red">Activity Type is required</div>
                     </div>
@@ -86,12 +95,15 @@
                 </div>
 
                 <div class="form-group row">
-                  <label class="col-md-3 col-form-label" for="text-input">Activity Description<b style="color:red">*</b></label>
+                  <label class="col-md-3 col-form-label" for="text-input">Activity Description<b
+                      style="color:red">*</b></label>
                   <div class="col-md-9">
                     <textarea type="text" rows="5" maxlength="500" formControlName="Description" class="form-control"
-                      placeholder="activity Description" [(ngModel)]="activities.activity_desc" [ngClass]="{ 'is-invalid': submitted && f.Type.errors }"></textarea>
+                      placeholder="activity Description" [(ngModel)]="activities.activity_desc"
+                      [ngClass]="{ 'is-invalid': submitted && f.Type.errors }"></textarea>
                     <div *ngIf="submitted && f.Description.errors" class="invalid-feedback">
-                      <div *ngIf="f.Description.errors.required" style="color:red">Activity Description is required</div>
+                      <div *ngIf="f.Description.errors.required" style="color:red">Activity Description is required
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -110,13 +122,14 @@
                 </div>
                 <span *ngIf="!activities.activity_id">
                   <button style="margin-left: 26%;" class="btn btn-primary" (click)="addUserActivity()">ADD</button>
-                  
+
                 </span>
                 <span *ngIf="activities.activity_id">
                   <button style="margin-left: 26%;" class="btn btn-primary" (click)="addUserActivity()">Update</button>
                 </span>
                 &nbsp;&nbsp;
-                <button type="button" id="CloseButton" class="btn btn-secondary" (click)="addorUpdateActivity.hide();backupData()">Close</button>
+                <button type="button" id="CloseButton" class="btn btn-secondary"
+                  (click)="addorUpdateActivity.hide();backupData()">Close</button>
               </form>
             </div>
           </div>
