@@ -27,11 +27,11 @@ export const navItems = [
   {
     name: 'Content',
     url: '/content',
-    icon: 'icon-plus'
+    icon: 'icon-layers'
   },
   {
     name: 'Banners',
     url: '/all/banners',
-    icon: 'icon-drop'
+    icon: 'icon-badge'
   }
 ];

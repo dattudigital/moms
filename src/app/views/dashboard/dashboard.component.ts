@@ -9,7 +9,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 })
 export class DashboardComponent implements OnInit {
   completeDashboardData: any
-  public mainChartData1: Array<number> = [0, 0, 0, 0, 0, 0, 0];
+  public mainChartData1: Array<number> = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
   constructor(private spinner: NgxSpinnerService, private service: DashboardService) {
   }
@@ -24,9 +24,8 @@ export class DashboardComponent implements OnInit {
       let days = [];
       let dayName = [];
       let i = 0;
-      console.log(response.json().data);
       let graphData = response.json().data;
-      for (i = 6; i >= 0; i--) {
+      for (i = 14; i >= 0; i--) {
         var dateOffset = (24 * 60 * 60 * 1000) * i;
         var myDate = new Date();
         myDate.setTime(myDate.getTime() - dateOffset);
@@ -93,9 +92,9 @@ export class DashboardComponent implements OnInit {
       yAxes: [{
         ticks: {
           beginAtZero: true,
-          maxTicksLimit: 20,
-          stepSize: Math.ceil(50 / 10),
-          max: 50
+          // maxTicksLimit: 20,
+          // stepSize: Math.ceil(50 / 10),
+          max: 10
         }
       }]
     },
