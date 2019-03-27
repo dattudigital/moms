@@ -36,7 +36,8 @@ export class ToastyMessageService {
   }
 
   errorToast(val: any) {
-    this.toastOptionsSuccess.msg = val;
+    console.log(val)
+    this.toastOptionsError.msg = val;
     this.toastyService.error(this.toastOptionsError);
   }
 
