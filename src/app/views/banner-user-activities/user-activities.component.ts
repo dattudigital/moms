@@ -101,7 +101,7 @@ export class UserActivitiesComponent implements OnInit {
         this.selectedUserId = undefined;
         this.selctedActivityId = undefined;
         this.startDate = null;
-        this.endDate = " ";
+        this.endDate = null;
         this.getUserActivities();
         this.toastMessage.successToast("Reset Applied Successfully");
 
