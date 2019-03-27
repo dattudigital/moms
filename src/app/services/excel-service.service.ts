@@ -5,6 +5,7 @@ import { Http } from '@angular/http';
 
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const EXCEL_EXTENSION = '.xlsx';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,6 @@ const EXCEL_EXTENSION = '.xlsx';
 export class ExcelServiceService {
 
   constructor() {
-
   }
 
   public exportAsExcelFile(json: any[], excelFileName: string): void {
@@ -22,8 +22,9 @@ export class ExcelServiceService {
     this.saveAsExcelFile(excelBuffer, excelFileName);
   }
   private saveAsExcelFile(buffer: any, fileName: string): void {
+    let newDate = moment(new Date()).format('DD-MM-YYYY').toString();
     const data: Blob = new Blob([buffer], { type: EXCEL_TYPE });
-    FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
+    FileSaver.saveAs(data, fileName + '_export_' + newDate + EXCEL_EXTENSION);
   }
 
 }
