@@ -18,6 +18,6 @@ export class UsersService {
   }
 
   public getUserActivities(URL: any) {
-    return this.http.get(environment.host + 'user-activities?' + URL);
+    return this.http.get(environment.host + 'user-activities/web?' + URL);
   }
 }

@@ -5,11 +5,13 @@ import { UserActivitiesService } from '../../services/user-activities.service';
 import { CompeleteMomsService } from '../../services/compelete-moms.service';
 import { UserActivityPipe } from '../../pipe/user-activity.pipe';
 import { ExcelServiceService } from '../../services/excel-service.service';
+import { ToastyMessageService } from '../../services/toasty-message.service';
 
 @Component({
     templateUrl: 'user-activities.component.html',
     providers: [
-        UserActivityPipe
+        UserActivityPipe,
+        ToastyMessageService
     ]
 })
 
@@ -23,24 +25,11 @@ export class UserActivitiesComponent implements OnInit {
     endDate: any;
     excelData: any = [];
 
-    constructor(private service: UsersService, private excelService: ExcelServiceService, private userpipe: UserActivityPipe, private completeservice: CompeleteMomsService, private spinner: NgxSpinnerService, private activitiyService: UserActivitiesService) {
+    constructor(private service: UsersService, private toastMessage: ToastyMessageService, private excelService: ExcelServiceService, private userpipe: UserActivityPipe, private completeservice: CompeleteMomsService, private spinner: NgxSpinnerService, private activitiyService: UserActivitiesService) {
     }
 
     ngOnInit() {
-        let _activities = this.completeservice.getUserActivityData();
-        if (Object.keys(_activities).length) {
-            this.userActivitysData = _activities
-        } else {
-            this.service.getUserActivities('').subscribe(res => {
-                if (res.json().status == true) {
-                    console.log(res.json().result)
-                    this.userActivitysData = this.userpipe.transform(res.json().result);;
-                    console.log(this.userActivitysData)
-                    this.completeservice.addUserActivityData(res.json().result)
-                }
-            })
-        }
-
+        this.getUserActivities();
         let _activity = this.completeservice.getActivityData();
         if (Object.keys(_activity).length) {
             this.activitys = _activity
@@ -64,6 +53,23 @@ export class UserActivitiesComponent implements OnInit {
         }
     }
 
+    getUserActivities() {
+        let _activities = this.completeservice.getUserActivityData();
+        if (Object.keys(_activities).length) {
+            this.userActivitysData = _activities
+        } else {
+            this.spinner.show()
+            this.service.getUserActivities('').subscribe(res => {
+                this.spinner.hide();
+                if (res.json().status == true) {
+                    this.userActivitysData = this.userpipe.transform(res.json().result);
+                    console.log(this.userActivitysData)
+                    this.completeservice.addUserActivityData(res.json().result)
+                }
+            })
+        }
+    }
+
     search() {
         var url = '';
         if (this.startDate) {
@@ -79,9 +85,14 @@ export class UserActivitiesComponent implements OnInit {
             url = url + '&activityid=' + this.selctedActivityId;
         }
         console.log(url)
+        this.spinner.show();
         this.service.getUserActivities(url).subscribe(res => {
+            this.spinner.hide();
             if (res.json().status == true) {
-                this.userActivitysData = res.json().result
+                this.userActivitysData = this.userpipe.transform(res.json().result)
+            } else {
+                this.userActivitysData = [];
+                this.toastMessage.errorToast("No Records Found");
             }
         })
     }
@@ -90,17 +101,21 @@ export class UserActivitiesComponent implements OnInit {
         this.selectedUserId = undefined;
         this.selctedActivityId = undefined;
         this.startDate = null;
-        this.endDate = " ";
+        this.endDate = null;
+        this.getUserActivities();
+        this.toastMessage.successToast("Reset Applied Successfully");
+
     }
 
     exportAsXLSX() {
-        this.service.getUserActivities('').subscribe(res => {
-            if (res.json().status == true) {
-                console.log(res.json().result)
-                this.excelData = this.userpipe.transform(res.json().result);;
-                console.log(this.excelData)
-                this.excelService.exportAsExcelFile(this.excelData, 'Useractivity');
-            }
-        })
+        this.excelService.exportAsExcelFile(this.userActivitysData, 'Useractivity');
+
+        // this.service.getUserActivities('').subscribe(res => {
+        //     if (res.json().status == true) {
+        //         console.log(res.json().result)
+        //         this.excelData = this.userpipe.transform(res.json().result);;
+        //         console.log(this.excelData)
+        //     }
+        // })
     }
 }
