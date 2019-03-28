@@ -163,14 +163,16 @@
     <div class="row">
       <div class="col-md-12">
         <div class="card">
-          <div class="card-header">
-            Registered Users
-          </div>
           <div class="card-body">
-                  <div class="col-sm-7 d-none d-md-block">
-                    <div class="btn-group btn-group-toggle float-right mr-3" data-toggle="buttons">
-                    </div>
-                  </div>
+            <div class="row">
+              <div class="col-sm-5">
+                <h4 class="card-title mb-0">Registered Users Count For Last 15 Days</h4>
+              </div>
+              <div class="col-sm-7 d-none d-md-block">
+                <div class="btn-group btn-group-toggle float-right mr-3" data-toggle="buttons">
+                </div>
+              </div>
+            </div>
         
                 <div class="chart-wrapper" style="height:300px;margin-top:40px;">
                   <canvas baseChart class="chart" [datasets]="mainChartData" [labels]="mainChartLabels"
