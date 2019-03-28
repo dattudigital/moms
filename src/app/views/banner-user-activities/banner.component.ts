@@ -6,6 +6,7 @@ import { ToastyMessageService } from '../../services/toasty-message.service';
 import { BannersService } from '../../services/banners.service';
 import { CompeleteMomsService } from '../../services/compelete-moms.service';
 import { ExcelServiceService } from '../../services/excel-service.service';
+import * as moment from 'moment';
 
 @Component({
     templateUrl: 'banner.component.html',
@@ -36,8 +37,13 @@ export class BannerComponent implements OnInit {
         'promotion_img_name': '',
         'promotion_description': '',
         'promotion_for': '',
+        'from_date': '',
+        'end_date': '',
         'rec_status': ''
     }
+    selctedPromotionId: any;
+    startDate: any;
+    endDate: any;
 
     constructor(private service: BannersService, private excelService: ExcelServiceService, private completeservice: CompeleteMomsService, private spinner: NgxSpinnerService, private toastMessage: ToastyMessageService, private formBuilder: FormBuilder, private cdr: ChangeDetectorRef) {
 
@@ -47,23 +53,28 @@ export class BannerComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.getBannerData();
+        this.bannerForm = this.formBuilder.group({
+            Name: ['', Validators.required],
+            for: ['', Validators.required],
+            desc: ['', Validators.required],
+            StartDate: ['', Validators.required],
+            EndDate: ['', Validators.required]
+        });
+    }
+
+    getBannerData() {
         let _banner = this.completeservice.getBanners();
         if (Object.keys(_banner).length) {
             this.bannersData = _banner
         } else {
-            this.service.listBanners('0').subscribe(res => {
+            this.service.listBanners('').subscribe(res => {
                 if (res.json().status == true) {
                     this.bannersData = res.json().result;
                     this.completeservice.addBanners(res.json().result)
                 }
             })
         }
-
-        this.bannerForm = this.formBuilder.group({
-            Name: ['', Validators.required],
-            for: ['', Validators.required],
-            desc: ['', Validators.required]
-        });
     }
 
     get f() { return this.bannerForm.controls; }
@@ -89,6 +100,8 @@ export class BannerComponent implements OnInit {
             promotion_img_name: this.banner.promotion_img_name,
             promotion_description: this.banner.promotion_description,
             promotion_for: this.banner.promotion_for,
+            from_date: this.banner.from_date,
+            end_date: this.banner.end_date,
             rec_status: this.banner.rec_status
         }
         console.log(data);
@@ -147,10 +160,16 @@ export class BannerComponent implements OnInit {
     }
 
     editBanner(data, index) {
-        console.log(data);
         this.copiedRow = Object.assign({}, data);
         this.banner = data;
-        console.log(this.banner)
+        if (this.banner.from_date) {
+            let newDate = moment(this.banner.from_date).format('YYYY-MM-DD').toString();
+            this.banner.from_date = newDate;
+        }
+        if (this.banner.end_date) {
+            let newDate = moment(this.banner.end_date).format('YYYY-MM-DD').toString();
+            this.banner.end_date = newDate;
+        }
         this.banner["index"] = index;
     }
 
@@ -191,13 +210,45 @@ export class BannerComponent implements OnInit {
         this.banner.rec_status = '';
     }
     exportAsXLSX(): void {
-        this.service.listBanners('1').subscribe(res => {
+        this.excelService.exportAsExcelFile(this.bannerData, 'Banners');
+
+        // this.service.listBanners('1').subscribe(res => {
+        //     if (res.json().status == true) {
+        //         this.excelData = res.json().result;
+        //     } else {
+        //         this.excelData = [];
+        //     }
+        // })
+    }
+
+    searchDetails() {
+        var url = '';
+        if (this.startDate) {
+            url = url + 'startdate=' + this.startDate;
+        }
+        if (this.endDate) {
+            url = url + '&enddate=' + this.endDate;
+        }
+        if (this.selctedPromotionId) {
+            url = url + '&promotionid=' + this.selctedPromotionId;
+        }
+        console.log(url)
+        this.spinner.show();
+        this.service.listBanners(url).subscribe(res => {
+            this.spinner.hide();
             if (res.json().status == true) {
-                this.excelData = res.json().result;
+                this.bannersData = res.json().result;
             } else {
-                this.excelData = [];
+                this.bannersData = [];
+                this.toastMessage.errorToast("No Records Found");
             }
-            this.excelService.exportAsExcelFile(this.excelData, 'Banners');
         })
+    }
+    resetDetails() {
+        this.selctedPromotionId = undefined;
+        this.startDate = null;
+        this.endDate = null;
+        this.getBannerData();
+        this.toastMessage.successToast("Reset Applied Successfully");
     }
 }

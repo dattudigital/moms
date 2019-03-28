@@ -14,8 +14,8 @@ export class BannersService {
     return this.http.post(environment.host + 'promotions', data);
   }
 
-  public listBanners(type: any) {
-    return this.http.get(environment.host + 'promotions?type=' + type);
+  public listBanners(URL: any) {
+    return this.http.get(environment.host + 'promotions?' + URL);
   }
 
 }
