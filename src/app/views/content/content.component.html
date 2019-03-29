@@ -41,7 +41,16 @@
                             <tr
                                 *ngFor="let content of ContentData | paginate: { itemsPerPage: 3, currentPage: currentPage };let i=index;">
                                 <td>{{content.content_name}}</td>
-                                <td>{{content.content_full_desc}}</td>
+                                <td class="desc">
+                                    <div id="__hide" class="content hideContent">
+                                        {{content.content_full_desc}}
+                                    </div>
+                                    <div id="__show" class="show-more showContent">
+                                        <a (click)="DisplayContent.show();DisplayContentData(content,i)"
+                                            style="color:blue;">Show more</a>
+                                        <!-- <button (click)="displayMoreContent()">Show more</button> -->
+                                    </div>
+                                </td>
                                 <td>{{content.content_short_desc}}</td>
                                 <td> <img [src]="content.content_image" height="50" width="50"
                                         style="border-radius: 25px;"></td>
@@ -257,3 +266,49 @@
         </div>
     </div>
 </div>
+
+<div bsModal #DisplayContent="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="width: 130%;">
+            <div class="modal-header">
+                <h4 class="modal-title">Content Description</h4>
+                <button type="button" class="close" (click)="DisplayContent.hide()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            {{longContent}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="DisplayContent.hide()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hideContent {
+        overflow: hidden;
+        height: 40px;
+    }
+
+    .showContent {
+        /* line-height: 1em; */
+        height: auto;
+        overflow: visible;
+
+    }
+
+    .show-more {
+        padding: 10px 0;
+        text-align: center;
+    }
+</style>

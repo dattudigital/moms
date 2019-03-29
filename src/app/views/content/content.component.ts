@@ -135,6 +135,11 @@ export class ContentComponent implements OnInit {
     this.content["index"] = index;
   }
 
+  longContent: '';
+  DisplayContentData(data, index) {
+    this.longContent = data.content_full_desc
+  }
+
 
   backupData() {
     let _index = ((this.currentPage - 1) * 3) + this.content["index"]
